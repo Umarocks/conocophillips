@@ -71,9 +71,9 @@ def Etopo(lon_area, lat_area, resolution):
     lat = np.reshape(lat, (lat_num, lon_num))
     topo = np.reshape(topo, (lat_num, lon_num))
     # Round lon, lat, and topo to 5 decimal points
-    lon = np.round(lon, 4)
-    lat = np.round(lat, 4)
-    topo = np.round(topo, 4)
+    lon = np.round(lon, 5)
+    lat = np.round(lat, 5)
+    topo = np.round(topo, 5)
     
 
     return lon, lat, topo
@@ -88,7 +88,7 @@ def mapping_map_to_sphere(lon, lat, radius=1):
     ys=radius*np.sin(lon)*np.cos(lat)
     zs=radius*np.sin(lat)
 
-    return np.round(xs, 4), np.round(ys, 4), np.round(zs, 4)
+    return np.round(xs, 5), np.round(ys, 5), np.round(zs, 5)
 
 m = Basemap()
 
