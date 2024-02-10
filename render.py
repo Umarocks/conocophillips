@@ -1,8 +1,5 @@
-import chart_studio.plotly as py
-import numpy as np           
-from scipy.io import netcdf  
+import numpy as np
 from mpl_toolkits.basemap import Basemap
-import warnings
 import plotly.graph_objs as go
 from numpy import pi, sin, cos
 from plotly.offline import plot
@@ -73,6 +70,11 @@ def Etopo(lon_area, lat_area, resolution):
     lon = np.reshape(lon, (lat_num, lon_num))
     lat = np.reshape(lat, (lat_num, lon_num))
     topo = np.reshape(topo, (lat_num, lon_num))
+    # Round lon, lat, and topo to 5 decimal points
+    lon = np.round(lon, 4)
+    lat = np.round(lat, 4)
+    topo = np.round(topo, 4)
+    
 
     return lon, lat, topo
 
@@ -85,7 +87,8 @@ def mapping_map_to_sphere(lon, lat, radius=1):
     xs=radius*np.cos(lon)*np.cos(lat)
     ys=radius*np.sin(lon)*np.cos(lat)
     zs=radius*np.sin(lat)
-    return xs, ys, zs
+
+    return np.round(xs, 4), np.round(ys, 4), np.round(zs, 4)
 
 m = Basemap()
 
@@ -135,7 +138,7 @@ def get_country_traces():
 def main():
     # Import topography data
     # Select the area you want
-    resolution = 0.8
+    resolution = 0.25
     lon_area = [-180., 180.]
     lat_area = [-90., 90.]
     # Get mesh-shape topography data

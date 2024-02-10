@@ -6,7 +6,6 @@ __pycache__/
 # C extensions
 *.so
 *.grd
-*.html
 
 # Distribution / packaging
 .Python
