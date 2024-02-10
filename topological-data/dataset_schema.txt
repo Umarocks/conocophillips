@@ -1,0 +1,42 @@
+dict_keys(['crs', 'lat', 'lon', 'z'])
+////crs////: <class 'netCDF4._netCDF4.Variable'>
+|S1 crs()
+    grid_mapping_name: latitude_longitude
+    long_name: CRS definition
+    longitude_of_prime_meridian: 0.0
+    semi_major_axis: 6378137.0
+    inverse_flattening: 298.257223563
+    spatial_ref: GEOGCS["WGS 84",DATUM["WGS_1984",SPHEROID["WGS 84",6378137,298.257223563,AUTHORITY["EPSG","7030"]],AUTHORITY["EPSG","6326"]],PRIMEM["Greenwich",0,AUTHORITY["EPSG","8901"]],UNIT["degree",0.0174532925199433,AUTHORITY["EPSG","9122"]],AXIS["Latitude",NORTH],AXIS["Longitude",EAST],AUTHORITY["EPSG","4326"]]
+    GeoTransform: 0 0.004166666666666667 0 0 0 -0.004166666666666667
+unlimited dimensions:
+current shape = ()
+filling off
+////lat////: <class 'netCDF4._netCDF4.Variable'>
+float64 lat(lat)
+    standard_name: latitude
+    long_name: latitude
+    units: degrees_north
+unlimited dimensions:
+current shape = (3600,)
+filling off
+////lon////: <class 'netCDF4._netCDF4.Variable'>
+float64 lon(lon)
+    standard_name: longitude
+    long_name: longitude
+    units: degrees_east
+unlimited dimensions:
+current shape = (3600,)
+filling off
+////z////: <class 'netCDF4._netCDF4.Variable'>
+float32 z(lat, lon)
+    long_name: z
+    _FillValue: -99999.0
+    grid_mapping: crs
+    units: meters
+    positive: up
+    standard_name: height
+    vert_crs_name: EGM2008
+    vert_crs_epsg: EPSG:3855
+unlimited dimensions:
+current shape = (3600, 3600)
+filling off
