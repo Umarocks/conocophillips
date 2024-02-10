@@ -1,1 +1,6 @@
-pip install plotly
+pip install chart-studio
+pip install pandasql
+pip install numpy
+pip install scipy
+pip install matplotlib
+pip install basemap
