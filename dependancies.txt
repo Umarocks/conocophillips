@@ -9,3 +9,5 @@ pip install pandas
 pip install numpy
 pip install matplotlib
 pip install pycountry
+pip install streamlit
+pip install streamlit-folium
