@@ -1,0 +1,12 @@
+scipy
+matplotlib
+basemap
+netCDF4
+pandas
+numpy
+matplotlib
+pycountry
+streamlit
+streamlit-folium
+countryflag
+folium
