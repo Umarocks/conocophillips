@@ -66,7 +66,7 @@ class App(ctk.CTk):
     def __init__(self):
         super().__init__()
 
-        self.title('Hawkathon 2023 Plagiarism Detection Software')
+        self.title('Sustainability Software')
         self.geometry(f'{1100}x{580}')
         self.grid_columnconfigure(1, weight=1)
         self.grid_columnconfigure((2, 3), weight=0)
