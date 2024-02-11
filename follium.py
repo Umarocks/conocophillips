@@ -11,7 +11,7 @@ import pycountry
 
 continents = ['Low-income countries', 'High-income countries', 'Lower-middle-income countries', 'Upper-middle-income countries', 'World', 'Africa', 'Asia', 'Europe', 'North America', 'Oceania', 'South America']
 
-def create_map_2(columns, df, year, primary_key, gradient):
+def create_map_2(df, year, primary_key, gradient):
     if 'year' in df.columns:
         df = df[(df['year'] == year)]
     elif 'Year' in df.columns:
@@ -32,7 +32,6 @@ def create_map_2(columns, df, year, primary_key, gradient):
         min_value = 0
         max_value = 0
     print(min_value, max_value)
-    
 
     tile_layer = folium.TileLayer(
         tiles='https://server.arcgisonline.com/ArcGIS/rest/services/World_Street_Map/MapServer/tile/{z}/{y}/{x}',
@@ -105,16 +104,16 @@ def create_map_2(columns, df, year, primary_key, gradient):
         value = ((data[primary_key] ** 0.5 - min_value) / (max_value - min_value)) if primary_key in data else 0.25
         value_dict[iso_code] = [
             0.2 + value * 0.8,
-            gradient.to_hex(gradient.get_blended_color(value))
+            gradient
         ]
 
         folium.GeoJson(
             feature,
             style_function=lambda feature: {
-                'fillColor': value_dict[feature['id']][1],
+                'fillColor': value_dict[feature['id']][1](value_dict[feature['id']][0]),
                 'color': 'black',
                 'weight': 2,
-                'fillOpacity': value_dict[feature['id']][0],
+                'fillOpacity': 0.7,
             },
             zoom_on_click = True,
             tooltip=f'{data["Country"]} {countryflag.getflag([data["Country"]])}'
@@ -131,8 +130,7 @@ def create_map_2(columns, df, year, primary_key, gradient):
     )
     search_control.add_to(m)
 
-    layer_control = folium.LayerControl()
-    layer_control.add_to(m)
+    gradient.add_to(m)
 
     conoconColor = {
         'Climate Change' : 'red',
@@ -180,10 +178,9 @@ def create_map_2(columns, df, year, primary_key, gradient):
 
 def create_map(filename, year, primary_key):
     schema = parse_schemas.get_schema()
-    columns = schema[filename][0]
     gradient = schema[filename][2]
     df = pd.read_csv(f'Backend/CSV/{filename}.csv')
-    return create_map_2(columns, df, year, primary_key, gradient)
+    return create_map_2(df, year, primary_key, gradient)
 
 if __name__ == '__main__':
     m = create_map('agricultural-land', 2020, 'Agricultural land')
