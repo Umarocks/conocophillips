@@ -1,4 +1,4 @@
-import color_gradient
+import branca.colormap as cm
 
 def get_schema():
     return {
@@ -39,55 +39,55 @@ def get_schema():
                 'wind_energy_per_capita', 'wind_share_elec', 'wind_share_energy'
             ],
             'coal_prod_change_pct',
-            color_gradient.ColorGradient((255, 0, 0), (0, 255, 0))
+            cm.linear.magma
         ],
         'agricultural-land': [
             [
                 'Entity','Code','Year','Agricultural land'
             ],
             'Agricultural land',
-            color_gradient.ColorGradient((255, 0, 255), (0, 255, 0))
+            cm.linear.Spectral_07
         ],
         'change-forest-area-share-total': [
             [
                 'Entity','Code','Year','Conversion as share of forest area'
             ],
             'Conversion as share of forest area',
-            color_gradient.ColorGradient((200, 0, 0), (0, 100, 200))
+            cm.linear.BuGn_06
         ],
         'co-emissions-per-capita': [
             [
                 'Entity','Code','Year','Annual CO₂ emissions (per capita)'
             ],
             'Annual CO₂ emissions (per capita)',
-            color_gradient.ColorGradient((0, 0, 255), (255, 0, 0))
+            cm.linear.YlOrBr_05
         ],
         'consumption-of-ozone-depleting-substances': [
             [
                 'Entity','Code','Year','Consumption of controlled substance (zero-filled) - Chemical: All (Ozone-depleting)'
             ],
             'Consumption of controlled substance (zero-filled) - Chemical: All (Ozone-depleting)',
-            color_gradient.ColorGradient((255, 255, 0), (0, 0, 255))
+            cm.linear.PuOr_06
         ],
         'fossil-fuel-primary-energy': [
             [
                 'Entity','Code','Year','Fossil fuels (TWh)'
             ],
             'Fossil fuels (TWh)',
-            color_gradient.ColorGradient((0, 255, 255), (255, 0, 0))
+            cm.linear.RdPu_08
         ],
         'fossil-fuels-per-capita': [
             [
                 'Entity','Code','Year','Fossil fuels per capita (kWh)'
             ],
             'Fossil fuels per capita (kWh)',
-            color_gradient.ColorGradient((255, 0, 0), (0, 255, 255))
+            cm.linear.RdPu_07
         ],
         'global-living-planet-index': [
             [
                 'Entity','Code','Year','Living Planet Index','Upper CI','Lower CI'
             ],
             'Living Planet Index',
-            color_gradient.ColorGradient((0, 255, 255), (255, 0, 255))
+            cm.linear.YlOrBr_07
         ]
     }
