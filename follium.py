@@ -126,9 +126,8 @@ def create_map_2(df, year, primary_key, gradient):
             tooltip=f'<h4>{data["Country"]} {year} {countryflag.getflag([data["Country"]])}</h4><h6>{primary_key_pretty}: {data[primary_key]}</h6>'
         ).add_to(country_layer)
 
-    with Pool(4) as executor:
-        for feature in country_geo['features']:
-            executor.apply_async(thread, (feature,))
+    for feature in country_geo['features']:
+        thread(feature)
 
     print('Time taken:', int(time.time() * 1000) - current_time_ms, 'ms')
 
