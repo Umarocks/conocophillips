@@ -92,10 +92,7 @@ for i in country_geo['features']:
         country = i
         break
 
-
 folium.GeoJson(country, name='germany').add_to(m)
-
-
 
 folium.LayerControl().add_to(m)
 
