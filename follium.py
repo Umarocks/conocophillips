@@ -1,9 +1,11 @@
-
-
 import folium
+from folium import *
 import webbrowser
 from folium.plugins import *
 import json
+import random
+import pandas as pd
+import pycountry
 
 night_layer = folium.TileLayer(
     tiles='https://map1.vis.earthdata.nasa.gov/wmts-webmerc/VIIRS_CityLights_2012/default/{time}/{tilematrixset}{maxZoom}/{z}/{y}/{x}.{format}',
@@ -26,6 +28,7 @@ m = folium.Map(
     location=(45.5236, -122.6750),
     tiles=tile_layer,
 )
+
 
 button_html = """
 <div style="position: fixed; top: 10px; left: 10px; z-index: 1000;">
@@ -63,7 +66,6 @@ folium.Circle(
     popup='Water Amount: 100000'
 ).add_to(m)
 
-import random
 
 # Generate random heatmap data
 heatmap_data = []
@@ -74,30 +76,126 @@ for _ in range(5000):
     heatmap_data.append([lat, lon, intensity])
 
 # Create HeatMap layer and add it to the map
-heatmap = HeatMap(heatmap_data, radius=20)
-heatmap.add_to(m)
-
-m.save("index.html")
-webbrowser.open("index.html")
-
-# Create HeatMap layer and add it to the map
-heatmap = HeatMap(heatmap_data)
+heatmap = HeatMap(heatmap_data, radius=20, max_zoom=8)
 heatmap.add_to(m)
 
 with open('datasets/world-countries.json') as handle:
     country_geo = json.loads(handle.read())
 
-for i in country_geo['features']:
-    if i['properties']['name'] == 'Germany':
-        country = i
-        break
+country_layer = folium.FeatureGroup(name='Countries')
+country_layer.add_to(m)
 
+year = 2019
 
-folium.GeoJson(country, name='germany').add_to(m)
+# Load the CSV file into a DataFrame
+df = pd.read_csv('Backend/CSV/owid-energy-data.csv')
+iso_code_dict = {}
+for index, row in df.iterrows():
+    iso_code = row['iso_code']
+    if row['year'] == year and iso_code not in iso_code_dict:
+        iso_code_dict[iso_code] = row
 
+columns = [
+    'country', 'year', 'iso_code', 'population', 'gdp', 'biofuel_cons_change_pct', 'biofuel_cons_change_twh',
+    'biofuel_cons_per_capita', 'biofuel_consumption', 'biofuel_elec_per_capita', 'biofuel_electricity',
+    'biofuel_share_elec', 'biofuel_share_energy', 'carbon_intensity_elec', 'coal_cons_change_pct',
+    'coal_cons_change_twh', 'coal_cons_per_capita', 'coal_consumption', 'coal_elec_per_capita',
+    'coal_electricity', 'coal_prod_change_pct', 'coal_prod_change_twh', 'coal_prod_per_capita',
+    'coal_production', 'coal_share_elec', 'coal_share_energy', 'electricity_demand', 'electricity_generation',
+    'electricity_share_energy', 'energy_cons_change_pct', 'energy_cons_change_twh', 'energy_per_capita',
+    'energy_per_gdp', 'fossil_cons_change_pct', 'fossil_cons_change_twh', 'fossil_elec_per_capita',
+    'fossil_electricity', 'fossil_energy_per_capita', 'fossil_fuel_consumption', 'fossil_share_elec',
+    'fossil_share_energy', 'gas_cons_change_pct', 'gas_cons_change_twh', 'gas_consumption',
+    'gas_elec_per_capita', 'gas_electricity', 'gas_energy_per_capita', 'gas_prod_change_pct',
+    'gas_prod_change_twh', 'gas_prod_per_capita', 'gas_production', 'gas_share_elec', 'gas_share_energy',
+    'greenhouse_gas_emissions', 'hydro_cons_change_pct', 'hydro_cons_change_twh', 'hydro_consumption',
+    'hydro_elec_per_capita', 'hydro_electricity', 'hydro_energy_per_capita', 'hydro_share_elec',
+    'hydro_share_energy', 'low_carbon_cons_change_pct', 'low_carbon_cons_change_twh', 'low_carbon_consumption',
+    'low_carbon_elec_per_capita', 'low_carbon_electricity', 'low_carbon_energy_per_capita',
+    'low_carbon_share_elec', 'low_carbon_share_energy', 'net_elec_imports', 'net_elec_imports_share_demand',
+    'nuclear_cons_change_pct', 'nuclear_cons_change_twh', 'nuclear_consumption', 'nuclear_elec_per_capita',
+    'nuclear_electricity', 'nuclear_energy_per_capita', 'nuclear_share_elec', 'nuclear_share_energy',
+    'oil_cons_change_pct', 'oil_cons_change_twh', 'oil_consumption', 'oil_elec_per_capita', 'oil_electricity',
+    'oil_energy_per_capita', 'oil_prod_change_pct', 'oil_prod_change_twh', 'oil_prod_per_capita',
+    'oil_production', 'oil_share_elec', 'oil_share_energy', 'other_renewable_consumption',
+    'other_renewable_electricity', 'other_renewable_exc_biofuel_electricity', 'other_renewables_cons_change_pct',
+    'other_renewables_cons_change_twh', 'other_renewables_elec_per_capita',
+    'other_renewables_elec_per_capita_exc_biofuel', 'other_renewables_energy_per_capita',
+    'other_renewables_share_elec', 'other_renewables_share_elec_exc_biofuel', 'other_renewables_share_energy',
+    'per_capita_electricity', 'primary_energy_consumption', 'renewables_cons_change_pct',
+    'renewables_cons_change_twh', 'renewables_consumption', 'renewables_elec_per_capita', 'renewables_electricity',
+    'renewables_energy_per_capita', 'renewables_share_elec', 'renewables_share_energy', 'solar_cons_change_pct',
+    'solar_cons_change_twh', 'solar_consumption', 'solar_elec_per_capita', 'solar_electricity',
+    'solar_energy_per_capita', 'solar_share_elec', 'solar_share_energy', 'wind_cons_change_pct',
+    'wind_cons_change_twh', 'wind_consumption', 'wind_elec_per_capita', 'wind_electricity',
+    'wind_energy_per_capita', 'wind_share_elec', 'wind_share_energy'
+]
 
+for feature in country_geo['features']:
+    iso_code = feature['id']
+    
+    tooltip = ''
+    if iso_code in iso_code_dict:
+        data = iso_code_dict[iso_code]
+        for column in columns:
+            if column in data:
+                #feature['properties'][column] = data[column]
+                tooltip += f"{column}: {data[column]}<br>"
+    folium.GeoJson(
+        feature,
+        #name=pycountry.countries.get(alpha_3=iso_code).name,
+        style_function=lambda x: {
+            'fillColor': 'green',
+            'color': 'black',
+            'weight': 2,
+            'fillOpacity': 0.5,
+        },
+        tooltip=tooltip
+    ).add_to(country_layer)
 
-folium.LayerControl().add_to(m)
+search_control = Search(
+    layer=country_layer,
+    geom_type='Polygon',
+    placeholder='Search for a country',
+    collapsed=False,
+    search_label='name',
+    search_zoom=6,
+    position='topright'
+)
+search_control.add_to(m)
+
+w0 = WmsTileLayer(
+    "http://this.wms.server/ncWMS/wms",
+    name="Test WMS Data",
+    styles="",
+    fmt="image/png",
+    transparent=True,
+    layers="test_data",
+    COLORSCALERANGE="0,10",
+)
+
+w0.add_to(m)
+
+w1 = WmsTileLayer(
+    "http://this.wms.server/ncWMS/wms",
+    name="Test WMS Data",
+    styles="",
+    fmt="image/png",
+    transparent=True,
+    layers="test_data_2",
+    COLORSCALERANGE="0,5",
+)
+
+w1.add_to(m)
+
+# Add WmsTileLayers to time control.
+
+time = TimestampedWmsTileLayers([w0, w1])
+
+time.add_to(m)
+
+layer_control = folium.LayerControl()
+layer_control.add_to(m)
 
 m.save("index.html")
 webbrowser.open("index.html")
