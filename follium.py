@@ -116,7 +116,8 @@ def create_map_2(columns, df, year, primary_key, gradient):
                 'weight': 2,
                 'fillOpacity': value_dict[feature['id']][0],
             },
-            zoom_on_click = True
+            zoom_on_click = True,
+            tooltip=f'{data["Country"]} {countryflag.getflag([data["Country"]])}'
         ).add_to(country_layer)
 
     search_control = Search(
