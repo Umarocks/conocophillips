@@ -25,7 +25,7 @@
             <meta name="viewport" content="width=device-width,
                 initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
             <style>
-                #map_d54a54956ae0d35a4249a478b403f321 {
+                #map_07e6445ae84abcadf67f8e639a3ee6b1 {
                     position: relative;
                     width: 100.0%;
                     height: 100.0%;
@@ -35,18 +35,23 @@
                 .leaflet-container { font-size: 1rem; }
             </style>
         
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet-locatecontrol/0.66.2/L.Control.Locate.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet-locatecontrol/0.66.2/L.Control.Locate.min.css"/>
+    <script src="https://cdn.jsdelivr.net/gh/ardhi/Leaflet.MousePosition/src/L.Control.MousePosition.min.js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/ardhi/Leaflet.MousePosition/src/L.Control.MousePosition.min.css"/>
+    <script src="https://cdn.jsdelivr.net/gh/digidem/leaflet-side-by-side@2.0.0/leaflet-side-by-side.min.js"></script>
 </head>
 <body>
     
     
-            <div class="folium-map" id="map_d54a54956ae0d35a4249a478b403f321" ></div>
+            <div class="folium-map" id="map_07e6445ae84abcadf67f8e639a3ee6b1" ></div>
         
 </body>
 <script>
     
     
-            var map_d54a54956ae0d35a4249a478b403f321 = L.map(
-                "map_d54a54956ae0d35a4249a478b403f321",
+            var map_07e6445ae84abcadf67f8e639a3ee6b1 = L.map(
+                "map_07e6445ae84abcadf67f8e639a3ee6b1",
                 {
                     center: [45.5236, -122.675],
                     crs: L.CRS.EPSG3857,
@@ -60,13 +65,34 @@
 
         
     
-            var tile_layer_8524cc83d3a0de80bdc083c50cd4c167 = L.tileLayer(
+            var tile_layer_460fcfbc982fb2acf453f595ba2141eb = L.tileLayer(
                 "https://server.arcgisonline.com/ArcGIS/rest/services/World_Street_Map/MapServer/tile/{z}/{y}/{x}",
                 {"attribution": "Tiles \u0026copy; Esri \u0026mdash; Source: Esri, DeLorme, NAVTEQ, USGS, Intermap, iPC, NRCAN, Esri Japan, METI, Esri China (Hong Kong), Esri (Thailand), TomTom, 2012", "detectRetina": false, "maxNativeZoom": 18, "maxZoom": 18, "minZoom": 3, "noWrap": false, "opacity": 1, "subdomains": "abc", "tms": false}
             );
         
     
-            tile_layer_8524cc83d3a0de80bdc083c50cd4c167.addTo(map_d54a54956ae0d35a4249a478b403f321);
+            tile_layer_460fcfbc982fb2acf453f595ba2141eb.addTo(map_07e6445ae84abcadf67f8e639a3ee6b1);
+        
+    
+            var locate_control_4f24be8e769c1ac2d72a9fbf5ed7d07d = L.control.locate(
+                {}
+            ).addTo(map_07e6445ae84abcadf67f8e639a3ee6b1);
+            
+        
+    
+            var mouse_position_ed08ede93c44e686491fcdba1ad73e50 = new L.Control.MousePosition(
+                {"emptyString": "Unavailable", "lngFirst": false, "numDigits": 5, "position": "bottomright", "prefix": "", "separator": " : "}
+            );
+            mouse_position_ed08ede93c44e686491fcdba1ad73e50.options["latFormatter"] =
+                undefined;
+            mouse_position_ed08ede93c44e686491fcdba1ad73e50.options["lngFormatter"] =
+                undefined;
+            map_07e6445ae84abcadf67f8e639a3ee6b1.addControl(mouse_position_ed08ede93c44e686491fcdba1ad73e50);
+        
+    
+            var side_by_side_layers_95842138ab923d821ec38b7553523248 = L.control.sideBySide(
+                tile_layer_73cc4e2a66c902c284309835ec32a0c1, tile_layer_9938f9b1e1824346e1e4b2e1de942ecc
+            ).addTo(map_07e6445ae84abcadf67f8e639a3ee6b1);
         
 </script>
 </html>
