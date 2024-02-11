@@ -107,6 +107,8 @@ def create_map_2(df, year, primary_key, gradient):
             gradient
         ]
 
+        primary_key_pretty = str(primary_key.replace('_', ' ').title())
+
         folium.GeoJson(
             feature,
             style_function=lambda feature: {
@@ -116,7 +118,7 @@ def create_map_2(df, year, primary_key, gradient):
                 'fillOpacity': 0.7,
             },
             zoom_on_click = True,
-            tooltip=f'{data["Country"]} {countryflag.getflag([data["Country"]])}'
+            tooltip=f'<h4>{data["Country"]} {year} {countryflag.getflag([data["Country"]])}</h4><h6>{primary_key_pretty}: {data[primary_key]}</h6>'
         ).add_to(country_layer)
 
     search_control = Search(
