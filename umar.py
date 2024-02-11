@@ -1,8 +1,9 @@
 import streamlit as st
 import pandas as pd
-import os
 import folium
 from streamlit_folium import st_folium
+import parse_schemas
+import os
 
 APP_TITLE = 'Fraud and IdCountry Theft Report'
 APP_SUB_TITLE = 'Source: Federal Trade Commission'
@@ -48,30 +49,31 @@ selected_dataset = st.selectbox("Select a dataset", simplified_names)
 
 # Find the corresponding file name and directory path
 selected_file_info = next(info for info in file_info if info[0] == selected_dataset)
-
+st.title(selected_file_info[1])
 full_path = os.path.join(selected_file_info[2], selected_file_info[1])
 
-# Read the CSV file using Pandas
-try:
-    df = pd.read_csv(full_path)
-    st.write(f"Showing contents of {selected_file_info[0]}")
-    st.dataframe(df)
-    attributes = [col for col in df.columns if col not in ['Country', 'Year','Code']]
-    countries = df['Country'].unique().tolist()
 
-    # Streamlit UI
+def UI(attributes,countries,df):# Streamlit UI
     st.title("CSV Data Viewer")
     # Multiselect for selecting attributes
     selected_attributes = st.multiselect("Select Attributes", attributes)
 
     # Dropdown for selecting all countries
-    selected_countries = st.multiselect("Select Countries", countries)
-
+    selected_countries = st.selectbox("Select Countries", countries)
     # Dropdown for selecting the year
     selected_year = st.selectbox("Select Year", sorted(df['Year'].unique(), reverse=True))
+    return selected_countries,selected_year,selected_attributes
 
+# Read the CSV file using Pandas# Read the CSV file using Pandas
+def get_csv():
+    df = pd.read_csv(full_path)
+    # st.write(f"Showing contents of {selected_file_info[0]}")
+    # st.dataframe(df)
+    attributes = [col for col in df.columns if col not in ['Country', 'Year','Code']]
+    countries = df['Country'].unique().tolist()
+    selected_countries,selected_year,selected_attributes = UI(attributes,countries,df)
     # Filter the dataframe based on user selections
-    filtered_df = df[(df['Country'].isin(selected_countries)) & (df['Year'] == selected_year)]
+    filtered_df = df[(df['Country'] == selected_countries) & (df['Year'] == selected_year)]
     selected_attributes.append('Country')        
     # filtered_df = filtered_df.rename(columns={'Country': 'Country'})
     selected_attributes.reverse()
@@ -81,7 +83,12 @@ try:
     else:
 
         st.dataframe(filtered_df[selected_attributes], hide_index=True)
-    st.title(filtered_df)        
+    # st.title(filtered_df)
+
+
+try:
+    get_csv()
+    
 except FileNotFoundError:
     st.error(f"File not found: {full_path}")
 except pd.errors.EmptyDataError:
