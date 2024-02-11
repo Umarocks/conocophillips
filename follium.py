@@ -156,8 +156,8 @@ def create_map_2(columns, df, year, primary_key, gradient):
             line = line.strip()
             if line: #new item "country name" added to list, be sure to account for this
                 name, variant, lat, lon, country_name = line.split(', ')
-                lat = -(float(lat) * 180 / 100 - 90) #why is there an outer negative sign?
-                lon = float(lon) * 360 / 100 - 180 + 20
+                lat = -(float(lat) * 180 / 100 - 90) + 20 #why is there an outer negative sign?
+                lon = float(lon) * 360 / 100 - 180 + 18
                 color = conoconColor.get(variant, 'red')
                 desc = f'<h3>{country_name} {countryflag.getflag([country_name])}</h3><h5>{name}</h5>{descriptions.pop()}'
                 popup = folium.Popup(desc, max_width=300, lazy = True)
