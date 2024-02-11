@@ -95,15 +95,14 @@ def create_map_2(columns, df, year, primary_key, gradient):
         value = ((data[primary_key] - min) / (max - min)) if primary_key in data else 0.25
         value_dict[iso_code] = [
             value,
-            gradient.to_hex(gradient.get_blended_color(value)),
-            gradient.to_hex(gradient.get_blended_color(1 - value))
+            gradient.to_hex(gradient.get_blended_color(value))
         ]
 
         folium.GeoJson(
             feature,
             style_function=lambda feature: {
                 'fillColor': value_dict[feature['id']][1],
-                'color': value_dict[feature['id']][2],
+                'color': 'black',
                 'weight': 2,
                 'fillOpacity': value_dict[feature['id']][0],
             },
