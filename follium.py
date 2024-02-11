@@ -12,15 +12,22 @@ import pycountry
 continents = ['Low-income countries', 'High-income countries', 'Lower-middle-income countries', 'Upper-middle-income countries', 'World', 'Africa', 'Asia', 'Europe', 'North America', 'Oceania', 'South America']
 
 def create_map_2(columns, df, year, primary_key, gradient):
+    if 'year' in df.columns:
+        df = df[(df['year'] == year)]
+    elif 'Year' in df.columns:
+        df = df[(df['Year'] == year)]
+    else:
+        raise ValueError('Year column not found')
+
     value_dict = {}
 
-    if 'year' in df.columns:
-        min_value = df.loc[df['year'].fillna(df['Year']) == year, primary_key].min()
-        max_value = df.loc[df['year'].fillna(df['Year']) == year, primary_key].max()
+    if primary_key in df.columns:
+        min_value = df[primary_key].min()
+        max_value = df[primary_key].max()
+        print(min_value, max_value)
     else:
-        min_value = df.loc[df['Year'] == year, primary_key].min()
-        max_value = df.loc[df['Year'] == year, primary_key].max()
-    print(min_value, max_value)
+        min_value = 0
+        max_value = 0
 
     tile_layer = folium.TileLayer(
         tiles='https://server.arcgisonline.com/ArcGIS/rest/services/World_Street_Map/MapServer/tile/{z}/{y}/{x}',
@@ -47,7 +54,7 @@ def create_map_2(columns, df, year, primary_key, gradient):
 
     # Load the CSV file into a DataFrame
     iso_code_dict = {}
-    for index, row in df.iterrows():
+    for _, row in df.iterrows():
         iso_code = None
         if 'iso_code' in row:
             iso_code = row['iso_code']
@@ -63,7 +70,7 @@ def create_map_2(columns, df, year, primary_key, gradient):
             except LookupError:
                 continue
 
-        if (row['year'] if 'year' in row else row['Year']) == year and iso_code not in iso_code_dict:
+        if iso_code not in iso_code_dict:
             iso_code_dict[iso_code] = row
 
     for feature in country_geo['features']:
