@@ -12,3 +12,5 @@ pip install pycountry
 pip install streamlit
 pip install streamlit-folium
 pip install countryflag
+pip3 install tkinterhtml
+pip install customtkinter==0.3
