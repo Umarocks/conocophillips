@@ -5,6 +5,7 @@ from folium.plugins import *
 import json
 import random
 import pandas as pd
+import pycountry
 
 night_layer = folium.TileLayer(
     tiles='https://map1.vis.earthdata.nasa.gov/wmts-webmerc/VIIRS_CityLights_2012/default/{time}/{tilematrixset}{maxZoom}/{z}/{y}/{x}.{format}',
@@ -84,8 +85,73 @@ with open('datasets/world-countries.json') as handle:
 country_layer = folium.FeatureGroup(name='Countries')
 country_layer.add_to(m)
 
+year = 2019
+
+# Load the CSV file into a DataFrame
+df = pd.read_csv('Backend/CSV/owid-energy-data.csv')
+iso_code_dict = {}
+for index, row in df.iterrows():
+    iso_code = row['iso_code']
+    if row['year'] == year and iso_code not in iso_code_dict:
+        iso_code_dict[iso_code] = row
+
+columns = [
+    'country', 'year', 'iso_code', 'population', 'gdp', 'biofuel_cons_change_pct', 'biofuel_cons_change_twh',
+    'biofuel_cons_per_capita', 'biofuel_consumption', 'biofuel_elec_per_capita', 'biofuel_electricity',
+    'biofuel_share_elec', 'biofuel_share_energy', 'carbon_intensity_elec', 'coal_cons_change_pct',
+    'coal_cons_change_twh', 'coal_cons_per_capita', 'coal_consumption', 'coal_elec_per_capita',
+    'coal_electricity', 'coal_prod_change_pct', 'coal_prod_change_twh', 'coal_prod_per_capita',
+    'coal_production', 'coal_share_elec', 'coal_share_energy', 'electricity_demand', 'electricity_generation',
+    'electricity_share_energy', 'energy_cons_change_pct', 'energy_cons_change_twh', 'energy_per_capita',
+    'energy_per_gdp', 'fossil_cons_change_pct', 'fossil_cons_change_twh', 'fossil_elec_per_capita',
+    'fossil_electricity', 'fossil_energy_per_capita', 'fossil_fuel_consumption', 'fossil_share_elec',
+    'fossil_share_energy', 'gas_cons_change_pct', 'gas_cons_change_twh', 'gas_consumption',
+    'gas_elec_per_capita', 'gas_electricity', 'gas_energy_per_capita', 'gas_prod_change_pct',
+    'gas_prod_change_twh', 'gas_prod_per_capita', 'gas_production', 'gas_share_elec', 'gas_share_energy',
+    'greenhouse_gas_emissions', 'hydro_cons_change_pct', 'hydro_cons_change_twh', 'hydro_consumption',
+    'hydro_elec_per_capita', 'hydro_electricity', 'hydro_energy_per_capita', 'hydro_share_elec',
+    'hydro_share_energy', 'low_carbon_cons_change_pct', 'low_carbon_cons_change_twh', 'low_carbon_consumption',
+    'low_carbon_elec_per_capita', 'low_carbon_electricity', 'low_carbon_energy_per_capita',
+    'low_carbon_share_elec', 'low_carbon_share_energy', 'net_elec_imports', 'net_elec_imports_share_demand',
+    'nuclear_cons_change_pct', 'nuclear_cons_change_twh', 'nuclear_consumption', 'nuclear_elec_per_capita',
+    'nuclear_electricity', 'nuclear_energy_per_capita', 'nuclear_share_elec', 'nuclear_share_energy',
+    'oil_cons_change_pct', 'oil_cons_change_twh', 'oil_consumption', 'oil_elec_per_capita', 'oil_electricity',
+    'oil_energy_per_capita', 'oil_prod_change_pct', 'oil_prod_change_twh', 'oil_prod_per_capita',
+    'oil_production', 'oil_share_elec', 'oil_share_energy', 'other_renewable_consumption',
+    'other_renewable_electricity', 'other_renewable_exc_biofuel_electricity', 'other_renewables_cons_change_pct',
+    'other_renewables_cons_change_twh', 'other_renewables_elec_per_capita',
+    'other_renewables_elec_per_capita_exc_biofuel', 'other_renewables_energy_per_capita',
+    'other_renewables_share_elec', 'other_renewables_share_elec_exc_biofuel', 'other_renewables_share_energy',
+    'per_capita_electricity', 'primary_energy_consumption', 'renewables_cons_change_pct',
+    'renewables_cons_change_twh', 'renewables_consumption', 'renewables_elec_per_capita', 'renewables_electricity',
+    'renewables_energy_per_capita', 'renewables_share_elec', 'renewables_share_energy', 'solar_cons_change_pct',
+    'solar_cons_change_twh', 'solar_consumption', 'solar_elec_per_capita', 'solar_electricity',
+    'solar_energy_per_capita', 'solar_share_elec', 'solar_share_energy', 'wind_cons_change_pct',
+    'wind_cons_change_twh', 'wind_consumption', 'wind_elec_per_capita', 'wind_electricity',
+    'wind_energy_per_capita', 'wind_share_elec', 'wind_share_energy'
+]
+
 for feature in country_geo['features']:
-    folium.GeoJson(feature).add_to(country_layer)
+    iso_code = feature['id']
+    
+    tooltip = ''
+    if iso_code in iso_code_dict:
+        data = iso_code_dict[iso_code]
+        for column in columns:
+            if column in data:
+                #feature['properties'][column] = data[column]
+                tooltip += f"{column}: {data[column]}<br>"
+    folium.GeoJson(
+        feature,
+        #name=pycountry.countries.get(alpha_3=iso_code).name,
+        style_function=lambda x: {
+            'fillColor': 'green',
+            'color': 'black',
+            'weight': 2,
+            'fillOpacity': 0.5,
+        },
+        tooltip=tooltip
+    ).add_to(country_layer)
 
 search_control = Search(
     layer=country_layer,
@@ -118,7 +184,6 @@ w1 = WmsTileLayer(
     transparent=True,
     layers="test_data_2",
     COLORSCALERANGE="0,5",
-
 )
 
 w1.add_to(m)
@@ -131,24 +196,6 @@ time.add_to(m)
 
 layer_control = folium.LayerControl()
 layer_control.add_to(m)
-
-# Load the CSV file into a DataFrame
-df = pd.read_csv('Backend/CSV/owid-energy-data.csv')
-numpy_array = df.to_numpy()
-# Specify the year and country you want to filter
-desired_year = 2008
-desired_country = 'USA'
-
-# Filter the DataFrame based on the specified year and country
-filtered_df = df[(df['year'] == desired_year) & (df['iso_code'] == desired_country)]
-
-filtered_df = filtered_df.dropna(subset=['latitude', 'longitude'])  # Drop rows with NaN values in latitude and longitude columns
-
-filtered_df = filtered_df.to_json(orient='records')
-
-# Add the filtered DataFrame to the map
-for i in range(0, len(numpy_array)):
-    folium.Marker([numpy_array[i][2], numpy_array[i][3]], popup=numpy_array[i][0]).add_to(m)
 
 m.save("index.html")
 webbrowser.open("index.html")
