@@ -132,11 +132,11 @@ def create_map_2(columns, df, year, primary_key):
         for line in file:
             line = line.strip()
             if line: #new item "country name" added to list, be sure to account for this
-                name, variant, lat, lon = line.split(', ')
+                name, variant, lat, lon, country_name = line.split(', ')
                 lat = -(float(lat) * 180 / 100 - 90) #why is there an outer negative sign?
                 lon = float(lon) * 360 / 100 - 180
                 color = conoconColor.get(variant, 'red')
-                icon_data.append([lat, lon, f'<b>{name}</b>', color])
+                icon_data.append([lat, lon, f'<b>{country_name}</b></br><b>{name}</b>', color])
 
     # Create IconMarkers and add them to the map
     for data in icon_data:
