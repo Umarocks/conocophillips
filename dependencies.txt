@@ -1,0 +1,13 @@
+pip install chart-studio
+pip install pandasql
+pip install numpy
+pip install scipy
+pip install matplotlib
+pip install basemap
+pip install netCDF4
+pip install pandas
+pip install numpy
+pip install matplotlib
+pip install pycountry
+pip install streamlit
+pip install streamlit-folium
