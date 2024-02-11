@@ -81,8 +81,9 @@ def get_csv():
     if not selected_attributes:
         st.sidebar.warning("Please select an attribute.")
     else:
-        create_map(selected_file_info[1].replace('.csv', ''), selected_year, selected_attributes)
-        # st.title("DONE")
+        m = create_map(selected_file_info[1].replace('.csv', ''), selected_year, selected_attributes)
+        st.title("DONE")
+        st_folium(m)
         # st.sidebar.dataframe(filtered_df[selected_attributes], hide_index=True)
     # st.title(filtered_df)
 
