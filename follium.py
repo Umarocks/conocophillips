@@ -5,7 +5,7 @@ from folium.plugins import *
 import json
 import pandas as pd
 
-def create_map(columns, df):
+def create_map(columns, df, year):
     tile_layer = folium.TileLayer(
         tiles='https://server.arcgisonline.com/ArcGIS/rest/services/World_Street_Map/MapServer/tile/{z}/{y}/{x}',
         attr='Tiles &copy; Esri &mdash; Source: Esri, DeLorme, NAVTEQ, USGS, Intermap, iPC, NRCAN, Esri Japan, METI, Esri China (Hong Kong), Esri (Thailand), TomTom, 2012',
@@ -42,13 +42,11 @@ def create_map(columns, df):
     country_layer = folium.FeatureGroup(name='Countries')
     country_layer.add_to(m)
 
-    year = 2019
-
     # Load the CSV file into a DataFrame
     iso_code_dict = {}
     for index, row in df.iterrows():
-        iso_code = row['iso_code']
-        if row['year'] == year and iso_code not in iso_code_dict:
+        iso_code = row['iso_code'] if 'iso_code' in row else row['Code']
+        if (row['year'] if 'year' in row else row['Year']) == year and iso_code not in iso_code_dict:
             iso_code_dict[iso_code] = row
 
     for feature in country_geo['features']:
@@ -59,14 +57,9 @@ def create_map(columns, df):
             data = iso_code_dict[iso_code]
             for column in columns:
                 if column in data and not pd.isna(data[column]):
-                    tooltip += f'{column}: {data[column]}'
-                    if (columns.index(column) + 1) % 3 == 0:
-                        tooltip += '<br>'
-                    else:
-                        tooltip += ', '
+                    tooltip += f'{column}: {data[column]}<br>'
         folium.GeoJson(
             feature,
-            #name=pycountry.countries.get(alpha_3=iso_code).name,
             style_function=lambda x: {
                 'fillColor': 'green',
                 'color': 'black',
@@ -141,10 +134,10 @@ def create_map(columns, df):
 
 if __name__ == '__main__':
     import parse_schemas
-    filename = 'owid-energy-data'
+    filename = 'agricultural-land'
     schema = parse_schemas.get_schema()
     df = pd.read_csv(f'Backend/CSV/{filename}.csv')
     columns = schema[filename][0]
-    m = create_map(columns, df)
+    m = create_map(columns, df, 2019)
     m.save('index.html')
     webbrowser.open('index.html')

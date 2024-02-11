@@ -9,7 +9,7 @@ schema = parse_schemas.get_schema()
 columns = schema[filename][0]
 
 df = pd.read_csv(f'Backend/CSV/{filename}.csv')
-m = follium.create_map(columns, df)
+m = follium.create_map(columns, df, 2020)
 
 st_folium(
     m,
