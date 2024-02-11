@@ -1,47 +1,47 @@
-Stakeholder Engagement on the North Slope, Stakeholder Engagement, 19.3, 6.25
-Engagement Efforts, Stakeholder Engagement, 37.03, 21.38
-NEED Project, Stakeholder Engagement, 40.69, 19.28
-Creating Community Benefit in Indonesia, Stakeholder Engagement, 62.05, 75.01
-Carbon XPRIZE, Climate Change, 39.01, 23.05
-Reducing Emissions at Surmont, Climate Change, 38.81, 21.16
-Reducing Emissions in Lower 48, Climate Change, 46.53, 20.82
-Mitigating Impact on the North Slope, Biodiversity, 20.09, 7.35
-Reducing Footprint at Surmont, Biodiversity, 39.1, 20.27
-Conservation Partnerships in Lower 48, Biodiversity, 40.69, 20.94
-Mitigating Impact in Norway, Biodiversity, 26.83, 48.11
-Biodiversity Partnerships in China, Biodiversity, 44.32, 75.32
-Turtle Rehabilitation in Australia, Biodiversity, 77.52, 85.63
-Managing Water in Norway, Water, 24.65, 7.03
-Water Management in Montney, Water, 39.3, 19.27
-TexNet, Water, 46.43, 20.71
-Managing Water in the Eagle Ford, Water, 44.85, 21.05
-Managing Water in Norway, Water, 26.83, 48.66
-The Global Water Sustainability Center, Water, 49.4, 60.24
-Managing Water in Australia, Water, 77.92, 85.19
-CareerQuest, Stakeholder Engagement, 20.59, 8.51
-Indigenous Engagement at Montney, Stakeholder Engagement, 33.66, 17.31
-Truckers Against Trafficking, Stakeholder Engagement, 41.19, 21.09
-Road Safety in the Eagle Ford, Stakeholder Engagement, 46.47, 21.79
-Stakeholder Engagement in the Permian, Stakeholder Engagement, 43.96, 21.09
-Stakeholder Engagement in the Bakken, Stakeholder Engagement, 37.03, 20.42
-Climate Leadership Council, Climate Change, 42.57, 27.17
-Junction Lake Conservation Area, Biodiversity, 40.69, 19.49
-Reducing Footprint in the Delaware Basin, Biodiversity, 43.72, 20.76
-Water in West Texas, Water, 45.5, 20.87
-Curtis Island Conservation, Biodiversity, 76.53, 85.19
-Australia Yalari, Stakeholder Engagement, 74.06, 83.79
-Emissions Reductions and New Energies at Ekofisk, Climate Change, 30.1, 48.44
-Faster Forests program, Biodiversity, 30.46, 15.41
-Water Management Priorities in Surmont, Water, 37.92, 20.16
-Reducing Footprint in the Bakken area of North Dakota, Biodiversity, 39.9, 18.82
-Minimizing impact in Australia, Biodiversity, 76.73, 85.3
-Mitigating Climate Change Risks at Montney, Climate Change, 39.21, 18.93
-Flaring Reduction Projects in Lower 48, Climate Change, 47.14, 20.38
-Stakeholder Engagement in the Eagle Ford, Stakeholder Engagement, 44.16, 21.09
-Creating Community Benefit in Malaysia, Stakeholder Engagement, 59.9, 72.62
-Reducing Footprint in the Permian Basin, Biodiversity, 45.64, 21.39
-Managing Water in the Permian Basin, Water, 47.42, 20.94
-Contributing to the Energy Transition in Lower 48, Climate Change, 44.95, 20.16
-Emissions Monitoring in Alaska, Climate Change, 19.6, 7.8
-Reducing Emissions in Australia, Climate Change, 77.62, 84.97
-Wind Power in Bohai Bay, Climate Change, 41.58, 77.17
+Stakeholder Engagement on the North Slope, Stakeholder Engagement, 19.3, 6.25, United States
+Engagement Efforts, Stakeholder Engagement, 37.03, 21.38, Canada
+NEED Project, Stakeholder Engagement, 40.69, 19.28, United States
+Creating Community Benefit in Indonesia, Stakeholder Engagement, 62.05, 75.01, Indonesia
+Carbon XPRIZE, Climate Change, 39.01, 23.05, Canada
+Reducing Emissions at Surmont, Climate Change, 38.81, 21.16, Canada
+Reducing Emissions in Lower 48, Climate Change, 46.53, 20.82, United States
+Mitigating Impact on the North Slope, Biodiversity, 20.09, 7.35, United States
+Reducing Footprint at Surmont, Biodiversity, 39.1, 20.27, Canada
+Conservation Partnerships in Lower 48, Biodiversity, 40.69, 20.94, United States
+Mitigating Impact in Norway, Biodiversity, 26.83, 48.11, Norway
+Biodiversity Partnerships in China, Biodiversity, 44.32, 75.32, China
+Turtle Rehabilitation in Australia, Biodiversity, 77.52, 85.63, Australia
+Managing Water in Alaska, Water, 24.65, 7.03, United States
+Water Management in Montney, Water, 39.3, 19.27, Canada
+TexNet, Water, 46.43, 20.71, United States
+Managing Water in the Eagle Ford, Water, 44.85, 21.05, United States
+Managing Water in Norway, Water, 26.83, 48.66, Norway
+The Global Water Sustainability Center, Water, 49.4, 60.24, Qatar
+Managing Water in Australia, Water, 77.92, 85.19, Australia
+CareerQuest, Stakeholder Engagement, 20.59, 8.51, United States
+Indigenous Engagement at Montney, Stakeholder Engagement, 33.66, 17.31, Canada
+Truckers Against Trafficking, Stakeholder Engagement, 41.19, 21.09, United States
+Road Safety in the Eagle Ford, Stakeholder Engagement, 46.47, 21.79, United States
+Stakeholder Engagement in the Permian, Stakeholder Engagement, 43.96, 21.09, United States
+Stakeholder Engagement in the Bakken, Stakeholder Engagement, 37.03, 20.42, United States
+Climate Leadership Council, Climate Change, 42.57, 27.17, United States
+Junction Lake Conservation Area, Biodiversity, 40.69, 19.49, United States
+Reducing Footprint in the Delaware Basin, Biodiversity, 43.72, 20.76, United States
+Water in West Texas, Water, 45.5, 20.87, United States
+Curtis Island Conservation, Biodiversity, 76.53, 85.19, Australia
+Australia Yalari, Stakeholder Engagement, 74.06, 83.79, Australia
+Emissions Reductions and New Energies at Ekofisk, Climate Change, 30.1, 48.44, Norway
+Faster Forests program, Biodiversity, 30.46, 15.41, Canada
+Water Management Priorities in Surmont, Water, 37.92, 20.16, Canada
+Reducing Footprint in the Bakken area of North Dakota, Biodiversity, 39.9, 18.82, United States
+Minimizing impact in Australia, Biodiversity, 76.73, 85.3, Australia
+Mitigating Climate Change Risks at Montney, Climate Change, 39.21, 18.93, Canada
+Flaring Reduction Projects in Lower 48, Climate Change, 47.14, 20.38, United States
+Stakeholder Engagement in the Eagle Ford, Stakeholder Engagement, 44.16, 21.09, United States
+Creating Community Benefit in Malaysia, Stakeholder Engagement, 59.9, 72.62, Malaysia
+Reducing Footprint in the Permian Basin, Biodiversity, 45.64, 21.39, United States
+Managing Water in the Permian Basin, Water, 47.42, 20.94, United States
+Contributing to the Energy Transition in Lower 48, Climate Change, 44.95, 20.16, United States
+Emissions Monitoring in Alaska, Climate Change, 19.6, 7.8, United States
+Reducing Emissions in Australia, Climate Change, 77.62, 84.97, Australia
+Wind Power in Bohai Bay, Climate Change, 41.58, 77.17, China
