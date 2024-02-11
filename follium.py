@@ -152,7 +152,11 @@ for feature in country_geo['features']:
         for column in columns:
             if column in data and not pd.isna(data[column]):
                 #feature['properties'][column] = data[column]
-                tooltip += f"{column}: {data[column]}<br>"
+                tooltip += f"{column}: {data[column]}"
+                if (columns.index(column) + 1) % 3 == 0:
+                    tooltip += "<br>"
+                else:
+                    tooltip += ", "
     folium.GeoJson(
         feature,
         #name=pycountry.countries.get(alpha_3=iso_code).name,
@@ -208,6 +212,8 @@ time.add_to(m)
 
 layer_control = folium.LayerControl()
 layer_control.add_to(m)
+
+
 
 m.save("index.html")
 webbrowser.open("index.html")
