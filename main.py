@@ -2,7 +2,7 @@ import streamlit as st
 from streamlit_folium import st_folium
 import follium
 
-m = follium.create_map('owid-energy-data', 2020)
+m = follium.create_map('owid-energy-data', 2020, 'coal_consumption')
 
 st_folium(
     m,
