@@ -8,6 +8,7 @@ import pandas as pd
 import re
 import countryflag
 import pycountry
+import time
 
 continents = ['Low-income countries', 'High-income countries', 'Lower-middle-income countries', 'Upper-middle-income countries', 'World', 'Africa', 'Asia', 'Europe', 'North America', 'Oceania', 'South America']
 
@@ -179,10 +180,13 @@ def create_map_2(df, year, primary_key, gradient):
     return m
 
 def create_map(filename, year, primary_key):
+    current_time_ms = int(time.time() * 1000)
     schema = parse_schemas.get_schema()
     gradient = schema[filename][2]
     df = pd.read_csv(f'Backend/CSV/{filename}.csv')
-    return create_map_2(df, year, primary_key, gradient)
+    m = create_map_2(df, year, primary_key, gradient)
+    print('Time taken:', int(time.time() * 1000) - current_time_ms, 'ms')
+    return m
 
 if __name__ == '__main__':
     m = create_map('agricultural-land', 2020, 'Agricultural land')
