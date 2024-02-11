@@ -18,16 +18,21 @@ def create_map_2(columns, df, year, primary_key, gradient):
         df = df[(df['Year'] == year)]
     else:
         raise ValueError('Year column not found')
+    
+    if 'Country' in df.columns:
+        df = df[~df['Country'].isin(continents)]
+        df = df[~df['Country'].apply(lambda x: x if re.match('^.*\([A-Z]+\).*$', x) else None).notna()]
 
     value_dict = {}
 
     if primary_key in df.columns:
-        min_value = df[primary_key].min()
-        max_value = df[primary_key].max()
-        print(min_value, max_value)
+        min_value = df[primary_key].min() ** 0.5
+        max_value = df[primary_key].max() ** 0.5
     else:
         min_value = 0
         max_value = 0
+    print(min_value, max_value)
+    
 
     tile_layer = folium.TileLayer(
         tiles='https://server.arcgisonline.com/ArcGIS/rest/services/World_Street_Map/MapServer/tile/{z}/{y}/{x}',
@@ -77,15 +82,10 @@ def create_map_2(columns, df, year, primary_key, gradient):
         iso_code = feature['id']
         
         failure = False
-        tooltip = ''
         if iso_code in iso_code_dict:
             data = iso_code_dict[iso_code]
             if not primary_key in data or pd.isna(data[primary_key]):
                 failure = True
-            else:
-                for column in columns:
-                    if column in data and not pd.isna(data[column]):
-                        tooltip += f'{column}: {data[column]}<br>'
         else:
             failure = True
 
@@ -102,9 +102,9 @@ def create_map_2(columns, df, year, primary_key, gradient):
             ).add_to(country_layer)
             continue
         
-        value = ((data[primary_key] - min_value) / (max_value - min_value)) if primary_key in data else 0.25
+        value = ((data[primary_key] ** 0.5 - min_value) / (max_value - min_value)) if primary_key in data else 0.25
         value_dict[iso_code] = [
-            value,
+            0.2 + value * 0.8,
             gradient.to_hex(gradient.get_blended_color(value))
         ]
 
@@ -116,7 +116,6 @@ def create_map_2(columns, df, year, primary_key, gradient):
                 'weight': 2,
                 'fillOpacity': value_dict[feature['id']][0],
             },
-            tooltip=tooltip,
             zoom_on_click = True
         ).add_to(country_layer)
 
@@ -186,8 +185,8 @@ def create_map(filename, year, primary_key):
     return create_map_2(columns, df, year, primary_key, gradient)
 
 if __name__ == '__main__':
-    #m = create_map('agricultural-land', 2020, 'Agricultural land')
-    m = create_map('fossil-fuels-per-capita', 2019, 'Fossil fuels per capita (kWh)')
+    m = create_map('agricultural-land', 2020, 'Agricultural land')
+    #m = create_map('fossil-fuels-per-capita', 2019, 'Fossil fuels per capita (kWh)')
     #m = create_map('fossil-fuel-primary-energy', 2019, 'Fossil fuels (TWh)')
     m.save('index.html')
     webbrowser.open('index.html')
