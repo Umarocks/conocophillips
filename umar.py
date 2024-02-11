@@ -1,3 +1,4 @@
+import threading
 import streamlit as st
 import pandas as pd
 import numpy as np
@@ -8,6 +9,7 @@ import os
 from follium import create_map
 from graph import plot_gauge
 import random
+import streamlit.components.v1 as components
 
 APP_TITLE = 'Fraud and IdCountry Theft Report'
 APP_SUB_TITLE = 'Source: Federal Trade Commission'
@@ -84,16 +86,31 @@ def get_csv():
     countries = df['Country'].unique().tolist()
     selected_countries,selected_year,selected_attributes = UI(attributes,countries,df)
     # Filter the dataframe based on user selections
-    filtered_df = df[(df['Country'] == selected_countries) & (df['Year'] == selected_year)]
+    filtered_df = df[(df['Year'] == selected_year)]
     # selected_attributes.append('Country')        
     # selected_attributes.reverse()
     # Display the filtered dataframe
     if not selected_attributes:
         st.sidebar.warning("Please select an attribute.")
     else:
-        m = create_map(selected_file_info[1].replace('.csv', ''), selected_year, selected_attributes)
-        st_folium(m)
-        st.dataframe(filtered_df, hide_index=True)
+        custom_css = """
+        <style>
+            .st-bd {
+                display: flex;
+                justify-content: space-around;
+                padding: 50px;
+            }
+        </style>
+        """
+        st.markdown(custom_css, unsafe_allow_html=True) 
+        col1, col2 = st.columns(2)
+        with col1:
+            m = create_map(selected_file_info[1].replace('.csv', ''), selected_year, selected_attributes)
+            st_folium(m)
+        with col2:
+            st.dataframe(filtered_df, hide_index=True)
+
+
 
 
 try:
