@@ -41,30 +41,6 @@ locate_control.add_to(m)
 mouse_position = MousePosition()
 mouse_position.add_to(m)
 
-folium.Marker(
-    location=(45, -122),
-    icon=folium.Icon(color='blue')
-).add_to(m)
-
-folium.Circle(
-    location=(45, -122),
-    radius=1000,
-    color='purple',
-    fill=True,
-    fill_color='purple'
-).add_to(m)
-
-folium.Circle(
-    location=(45, -122),
-    radius=100,
-    color='blue',
-    fill=True,
-    fill_color='blue',
-    fill_opacity=0.6,
-    weight=1,
-    popup='Water Amount: 100000'
-).add_to(m)
-
 '''
 # Generate random heatmap data
 heatmap_data = []
@@ -194,7 +170,7 @@ w1.add_to(m)
 
 # Add WmsTileLayers to time control.
 
-time = TimestampedWmsTileLayers([w0, w1])
+time = TimestampedWmsTileLayers([w0, w1], period='P1Y')
 
 time.add_to(m)
 
