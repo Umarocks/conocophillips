@@ -10,6 +10,7 @@ import re
 import countryflag
 import pycountry
 import time
+from functools import lru_cache
 
 continents = ['Low-income countries', 'High-income countries', 'Lower-middle-income countries', 'Upper-middle-income countries', 'World', 'Africa', 'Asia', 'Europe', 'North America', 'Oceania', 'South America']
 
@@ -209,6 +210,7 @@ def create_map_2(df, year, primary_key, gradient):
 
     return m
 
+@lru_cache(maxsize=2)
 def create_map(filename, year, primary_key):
     current_time_ms = int(time.time() * 1000)
     schema = parse_schemas.get_schema()
@@ -217,7 +219,7 @@ def create_map(filename, year, primary_key):
     try:
         m = create_map_2(df, year, primary_key, gradient)
     except:
-        m = folium.Map(location=[-23, -46], zoom_start=3, no_wrap=True,world_copy_jump=True)
+        m = folium.Map(location=[-23, -46], zoom_start=3, no_wrap=True, world_copy_jump=True)
     print('Time taken:', int(time.time() * 1000) - current_time_ms, 'ms')
     return m
 
