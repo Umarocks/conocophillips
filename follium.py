@@ -30,8 +30,8 @@ def create_map_2(df, year, primary_key, gradient):
 
     if primary_key in df.columns:
         df[primary_key] = df[primary_key].astype(float)  # Convert values to float
-        min_value = df[primary_key].min() ** 0.5
-        max_value = df[primary_key].max() ** 0.5
+        min_value = df[primary_key].min()
+        max_value = df[primary_key].max()
     else:
         min_value = 0
         max_value = 0
@@ -107,7 +107,7 @@ def create_map_2(df, year, primary_key, gradient):
             ).add_to(country_layer)
             return
         
-        value = ((data[primary_key] ** 0.5 - min_value) / (max_value - min_value)) if primary_key in data else 0.25
+        value = ((data[primary_key] - min_value) / (max_value - min_value)) if primary_key in data else 0.25
         value_dict[iso_code] = [
             0.2 + value * 0.8,
             gradient
