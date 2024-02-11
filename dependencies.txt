@@ -1,6 +1,3 @@
-pip install chart-studio
-pip install pandasql
-pip install numpy
 pip install scipy
 pip install matplotlib
 pip install basemap
@@ -12,3 +9,4 @@ pip install pycountry
 pip install streamlit
 pip install streamlit-folium
 pip install countryflag
+pip install folium
