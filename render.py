@@ -192,6 +192,7 @@ def main():
     
     plot_data=[topo_sphere]
     fig = go.Figure(data=plot_data, layout=layout)
+
     plot(fig, validate = False, filename='SphericalTopography.html',
     auto_open=True)
 
