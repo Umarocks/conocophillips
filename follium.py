@@ -59,12 +59,11 @@ def create_map(columns, df):
             data = iso_code_dict[iso_code]
             for column in columns:
                 if column in data and not pd.isna(data[column]):
-                    #feature['properties'][column] = data[column]
-                    tooltip += f"{column}: {data[column]}"
+                    tooltip += f'{column}: {data[column]}'
                     if (columns.index(column) + 1) % 3 == 0:
-                        tooltip += "<br>"
+                        tooltip += '<br>'
                     else:
-                        tooltip += ", "
+                        tooltip += ', '
         folium.GeoJson(
             feature,
             #name=pycountry.countries.get(alpha_3=iso_code).name,
@@ -74,8 +73,7 @@ def create_map(columns, df):
                 'weight': 2,
                 'fillOpacity': 0.25,
             },
-            #tooltip=tooltip,
-            html = '<canvas id="myChart" style="width:100%;max-width:700px"></canvas>',
+            tooltip=tooltip,
             parse_html=True
         ).add_to(country_layer)
 
@@ -94,10 +92,10 @@ def create_map(columns, df):
     layer_control.add_to(m)
 
     conoconColor = {
-        "Climate Change" : "red",
-        "Water" : "blue",
-        "Biodiversity" : "lightgreen",
-        "Stakeholder Engagement" : "orange"
+        'Climate Change' : 'red',
+        'Water' : 'blue',
+        'Biodiversity' : 'lightgreen',
+        'Stakeholder Engagement' : 'orange'
     }
 
     # Parse IconLocationsPercent.txt
@@ -142,6 +140,11 @@ def create_map(columns, df):
     return m
 
 if __name__ == '__main__':
-    m = create_map()
-    m.save("index.html")
-    webbrowser.open("index.html")
+    import parse_schemas
+    filename = 'owid-energy-data'
+    schema = parse_schemas.get_schema()
+    df = pd.read_csv(f'Backend/CSV/{filename}.csv')
+    columns = schema[filename][0]
+    m = create_map(columns, df)
+    m.save('index.html')
+    webbrowser.open('index.html')
