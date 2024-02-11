@@ -1,3 +1,4 @@
+from multiprocessing import Pool
 import parse_schemas
 import folium
 from folium import *
@@ -8,10 +9,12 @@ import pandas as pd
 import re
 import countryflag
 import pycountry
+import time
 
 continents = ['Low-income countries', 'High-income countries', 'Lower-middle-income countries', 'Upper-middle-income countries', 'World', 'Africa', 'Asia', 'Europe', 'North America', 'Oceania', 'South America']
 
 def create_map_2(df, year, primary_key, gradient):
+    current_time_ms = int(time.time() * 1000)
     if 'year' in df.columns:
         df = df[(df['year'] == year)]
     elif 'Year' in df.columns:
@@ -41,7 +44,7 @@ def create_map_2(df, year, primary_key, gradient):
     )
 
     m = folium.Map(location=[-23, -46],
-                zoom_start=3, no_wrap=True,world_copy_jump=True, tiles=tile_layer
+                zoom_start=3, no_wrap=True,world_copy_jump=True, tiles=tile_layer, 
                 )
 
     locate_control = LocateControl()
@@ -77,7 +80,9 @@ def create_map_2(df, year, primary_key, gradient):
         if iso_code not in iso_code_dict:
             iso_code_dict[iso_code] = row
 
-    for feature in country_geo['features']:
+    print('Time taken:', int(time.time() * 1000) - current_time_ms, 'ms')
+
+    def thread(feature):
         iso_code = feature['id']
         
         failure = False
@@ -99,7 +104,7 @@ def create_map_2(df, year, primary_key, gradient):
                 },
                 tooltip=f'No data available for this country in {year}.'
             ).add_to(country_layer)
-            continue
+            return
         
         value = ((data[primary_key] ** 0.5 - min_value) / (max_value - min_value)) if primary_key in data else 0.25
         value_dict[iso_code] = [
@@ -120,6 +125,12 @@ def create_map_2(df, year, primary_key, gradient):
             zoom_on_click = True,
             tooltip=f'<h4>{data["Country"]} {year} {countryflag.getflag([data["Country"]])}</h4><h6>{primary_key_pretty}: {data[primary_key]}</h6>'
         ).add_to(country_layer)
+
+    with Pool(4) as executor:
+        for feature in country_geo['features']:
+            executor.apply_async(thread, (feature,))
+
+    print('Time taken:', int(time.time() * 1000) - current_time_ms, 'ms')
 
     search_control = Search(
         layer=country_layer,
@@ -148,6 +159,8 @@ def create_map_2(df, year, primary_key, gradient):
         descriptions = re.split(';\n[0-9]+:', fulltext)
         descriptions = [x.strip() for x in descriptions]
         descriptions = [x for x in descriptions if x]
+
+    print('Time taken:', int(time.time() * 1000) - current_time_ms, 'ms')
 
     # Parse IconLocationsPercent.txt
     icon_data = []
@@ -179,10 +192,13 @@ def create_map_2(df, year, primary_key, gradient):
     return m
 
 def create_map(filename, year, primary_key):
+    current_time_ms = int(time.time() * 1000)
     schema = parse_schemas.get_schema()
     gradient = schema[filename][2]
     df = pd.read_csv(f'Backend/CSV/{filename}.csv')
-    return create_map_2(df, year, primary_key, gradient)
+    m = create_map_2(df, year, primary_key, gradient)
+    print('Time taken:', int(time.time() * 1000) - current_time_ms, 'ms')
+    return m
 
 if __name__ == '__main__':
     m = create_map('agricultural-land', 2020, 'Agricultural land')
