@@ -1,3 +1,4 @@
+Conclusion: Back-end worked, front-end needed refinement, which may involve back-end optimizations. 
 |Present Issue|Future Solution|
 |--------------|-----------------------|
 |Issues with Front-to-Back Integration|Should use a pre-existing library, package, or code and connect data-sets and APIs to that|
