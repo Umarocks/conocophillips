@@ -42,26 +42,25 @@ simplified_names = [
 file_info = list(zip(simplified_names, csv_files, [dir_path] * len(csv_files)))
 
 # Streamlit UI
-st.title("Data Sector Selector")
-
+st.sidebar.title("Data Sector Selector")
 # Dropdown menu to select a dataset
-selected_dataset = st.selectbox("Select a dataset", simplified_names)
+selected_dataset = st.sidebar.selectbox("Select a dataset", simplified_names)
 
 # Find the corresponding file name and directory path
 selected_file_info = next(info for info in file_info if info[0] == selected_dataset)
-st.title(selected_file_info[1])
+# st.sidebar.title(selected_file_info[1])
 full_path = os.path.join(selected_file_info[2], selected_file_info[1])
 
 
 def UI(attributes,countries,df):# Streamlit UI
-    st.title("CSV Data Viewer")
+    # st.sidebar.title("CSV Data Viewer")
     # Multiselect for selecting attributes
-    selected_attributes = st.multiselect("Select Attributes", attributes)
+    selected_attributes = st.sidebar.multiselect("Select Attributes", attributes)
 
     # Dropdown for selecting all countries
-    selected_countries = st.selectbox("Select Countries", countries)
+    selected_countries = st.sidebar.selectbox("Select Countries", countries)
     # Dropdown for selecting the year
-    selected_year = st.selectbox("Select Year", sorted(df['Year'].unique(), reverse=True))
+    selected_year = st.sidebar.selectbox("Select Year", sorted(df['Year'].unique(), reverse=True))
     return selected_countries,selected_year,selected_attributes
 
 # Read the CSV file using Pandas# Read the CSV file using Pandas
@@ -79,10 +78,10 @@ def get_csv():
     selected_attributes.reverse()
     # Display the filtered dataframe
     if not selected_attributes:
-        st.warning("Please select at least one attribute.")
+        st.sidebar.warning("Please select at least one attribute.")
     else:
 
-        st.dataframe(filtered_df[selected_attributes], hide_index=True)
+        st.sidebar.dataframe(filtered_df[selected_attributes], hide_index=True)
     # st.title(filtered_df)
 
 
@@ -90,8 +89,8 @@ try:
     get_csv()
     
 except FileNotFoundError:
-    st.error(f"File not found: {full_path}")
+    st.sidebar.error(f"File not found: {full_path}")
 except pd.errors.EmptyDataError:
-    st.error(f"The selected CSV file is empty: {full_path}")    
+    st.sidebar.error(f"The selected CSV file is empty: {full_path}")    
 
 
