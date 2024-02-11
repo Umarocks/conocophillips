@@ -24,10 +24,22 @@ tile_layer = folium.TileLayer(
     min_zoom=3,
 )
 
-m = folium.Map(
-    location=(45.5236, -122.6750),
-    tiles=tile_layer,
-)
+# 
+# f = folium.Figure(width=1000, height=500)
+# m = folium.Map(location=[-23, -46], 
+        #    tiles="openstreetmap",
+        #    zoom_start=5, 
+        #    min_zoom = 4,
+        #    max_zoom = 8,
+        #    ).add_to(f)
+# 
+m = folium.Map(location=[-23, -46],
+               zoom_start=3, no_wrap=True,world_copy_jump=True
+               )
+# m = folium.Map(
+#     location=(45.5236, -122.6750),
+#     tiles=tile_layer,
+# )
 
 
 button_html = """
