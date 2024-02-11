@@ -24,10 +24,22 @@ tile_layer = folium.TileLayer(
     min_zoom=3,
 )
 
-m = folium.Map(
-    location=(45.5236, -122.6750),
-    tiles=tile_layer,
-)
+# 
+# f = folium.Figure(width=1000, height=500)
+# m = folium.Map(location=[-23, -46], 
+        #    tiles="openstreetmap",
+        #    zoom_start=5, 
+        #    min_zoom = 4,
+        #    max_zoom = 8,
+        #    ).add_to(f)
+# 
+m = folium.Map(location=[-23, -46],
+               zoom_start=3, no_wrap=True,world_copy_jump=True
+               )
+# m = folium.Map(
+#     location=(45.5236, -122.6750),
+#     tiles=tile_layer,
+# )
 
 
 button_html = """
@@ -67,17 +79,17 @@ folium.Circle(
 ).add_to(m)
 
 
-# Generate random heatmap data
-heatmap_data = []
-for _ in range(5000):
-    lat = random.uniform(-90, 90)
-    lon = random.uniform(-180, 180)
-    intensity = random.uniform(0, 1)
-    heatmap_data.append([lat, lon, intensity])
+# # Generate random heatmap data
+# heatmap_data = []
+# for _ in range(5000):
+#     lat = random.uniform(-90, 90)
+#     lon = random.uniform(-180, 180)
+#     intensity = random.uniform(0, 1)
+#     heatmap_data.append([lat, lon, intensity])
 
-# Create HeatMap layer and add it to the map
-heatmap = HeatMap(heatmap_data, radius=20, max_zoom=8)
-heatmap.add_to(m)
+# # Create HeatMap layer and add it to the map
+# heatmap = HeatMap(heatmap_data, radius=20, max_zoom=8)
+# heatmap.add_to(m)
 
 with open('datasets/world-countries.json') as handle:
     country_geo = json.loads(handle.read())
