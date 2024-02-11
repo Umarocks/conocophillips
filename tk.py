@@ -6,8 +6,40 @@ import customtkinter as ctk # we use a fork of TK called customTK. it looks much
 from tkinter import filedialog # this is the file selection GUI. we can borrow it from vanilla TK
 import threading
 import webbrowser
+from follium import create_map
+from tkinterhtml import HtmlFrame
 
 ctk.set_appearance_mode('light')
+
+csv_files = [
+    "agricultural-land.csv",
+    "change-forest-area-share-total.csv",
+    "consumption-of-ozone-depleting-substances.csv",
+    "fossil-fuel-primary-energy.csv",
+    "fossil-fuels-per-capita.csv",
+    "owid-energy-data.csv",
+    "global-living-planet-index.csv",
+    "share-deaths-air-pollution.csv",
+    "water-and-sanitation.csv"
+]
+
+# Directory path where the CSV files are located
+dir_path = "./Backend/CSV/"
+
+# Corresponding simplified names
+simplified_names = [
+    "Agricultural Land",
+    "Change in Forest Area Share Total",
+    "Consumption of Ozone-Depleting Substances",
+    "Fossil Fuel Primary Energy",
+    "Fossil Fuels Per Capita",
+    "OWID Energy Data",
+    "Global Living Planet Index",
+    "Share of Deaths from Air Pollution",
+    "Water and Sanitation"
+]
+
+file_info = list(zip(simplified_names, csv_files, [dir_path] * len(csv_files)))
 
 root = ctk.CTk()
 
@@ -22,45 +54,6 @@ def make_readable(text):
         result += text[i:i+80] + '\n'
         i += 80
     return result
-
-def format_percentage(unsearchable_urls, percent):
-    percent = round(percent * 1000) / 10
-    return f'{percent}%' if len(unsearchable_urls) == 0 else f'>{percent}%'
-
-class ResultsWindow(ctk.CTkToplevel):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        self.geometry("800x600")
-        # create scrollable frame
-        self.scroll = ctk.CTkScrollableFrame(self, label_text='Results', width=3000, height=600, corner_radius=0)
-        self.scroll.pack()
-
-    # build the 2ed window that shows the search results
-    def process_results(self, plagiarisized_substrings, unsearchable_urls, percent):
-        if len(plagiarisized_substrings) == 0:
-            switch = ctk.CTkLabel(self.scroll, text='100% original!')
-            switch.pack(padx=20, pady=20)
-            switch = ctk.CTkLabel(self.scroll, text='We searched far and wide, but could not find any plagiarized text!')
-            switch.pack(padx=20, pady=0)
-        else:
-            switch = ctk.CTkLabel(self.scroll, text=f'{format_percentage(unsearchable_urls, percent)} plagiarized')
-            switch.pack(padx=20, pady=20)
-            switch = ctk.CTkLabel(self.scroll, text='We found the following plagiarized text:')
-            switch.pack(padx=20, pady=0)
-        for substring, url in plagiarisized_substrings:
-            print(f'"{substring}" was plagiarized from {url}')
-            switch = ctk.CTkLabel(self.scroll, text=f'{make_readable(substring)}\n\nwas plagiarized from')
-            switch.pack(padx=20, pady=20)
-            switch = ctk.CTkButton(self.scroll, text=url, command=lambda url=url: webbrowser.open(url), fg_color='transparent', border_width=0, text_color='blue')
-            switch.pack(padx=20, pady=0)
-        if len(unsearchable_urls) != 0:
-            switch = ctk.CTkLabel(self.scroll, text='Our webcrawler could not search the following websites.\nPlease ensure that the text you entered is not plagiarized from any of these websites.')
-            switch.pack(padx=20, pady=20)
-        for url in unsearchable_urls:
-            print('Could not search ' + url)
-            switch = ctk.CTkButton(self.scroll, text=url, command=lambda url=url: webbrowser.open(url), fg_color='transparent', border_width=0, text_color='blue')
-            switch.pack(padx=20, pady=0)
-        return self
 
 class App(ctk.CTk):
     def __init__(self):
@@ -83,6 +76,24 @@ class App(ctk.CTk):
         self.sidebar_button_1.grid(row=1, column=0, padx=20, pady=10)
         self.sidebar_button_2 = ctk.CTkButton(self.sidebar_frame, command=lambda: webbrowser.open(discord), text='Discord')
         self.sidebar_button_2.grid(row=2, column=0, padx=20, pady=10)
+
+        self.map_dataset_label = ctk.CTkLabel(self.sidebar_frame, text='Map Dataset', anchor='w')
+        self.map_dataset_label.grid(row=3, column=0, padx=20, pady=(10, 0))
+        self.map_dataset_label.appearance_mode_optionemenu = ctk.CTkOptionMenu(self.sidebar_frame, values=simplified_names, command=self.change_map_dataset_event)
+        self.map_dataset_label.appearance_mode_optionemenu.grid(row=4, column=0, padx=20, pady=(10, 10))
+
+        self.year_label = ctk.CTkLabel(self.sidebar_frame, text='Year', anchor='w')
+        self.year_label.grid(row=5, column=0, padx=20, pady=(10, 0))
+        self.year_optionemenu = ctk.CTkOptionMenu(self.sidebar_frame, values=['2010', '2011', '2012', '2013', '2014', '2015', '2016', '2017', '2018', '2019', '2020'],
+                                                                command=self.change_year_event)
+        self.year_optionemenu.grid(row=6, column=0, padx=20, pady=(10, 10))
+
+        self.attributes_label = ctk.CTkLabel(self.sidebar_frame, text='Attributes', anchor='w')
+        self.attributes_label.grid(row=7, column=0, padx=20, pady=(10, 0))
+        self.attributes_optionmenu = ctk.CTkOptionMenu(self.sidebar_frame, values=['Attribute 1', 'Attribute 2', 'Attribute 3'], command=self.change_attributes_event)
+        self.attributes_optionmenu.grid(row=8, column=0, padx=20, pady=(10, 10))
+
+        '''
         self.appearance_mode_label = ctk.CTkLabel(self.sidebar_frame, text='Appearance Mode', anchor='w')
         self.appearance_mode_label.grid(row=5, column=0, padx=20, pady=(10, 0))
         self.appearance_mode_optionemenu = ctk.CTkOptionMenu(self.sidebar_frame, values=['Light', 'Dark', 'System'],
@@ -95,6 +106,7 @@ class App(ctk.CTk):
         self.scaling_optionemenu.grid(row=8, column=0, padx=20, pady=(10, 20))
         self.appearance_mode_optionemenu.set('Light')
         self.scaling_optionemenu.set('100%')
+        '''
 
         # create main entry and button
         self.entry = ctk.CTkEntry(self, placeholder_text='CTkEntry')
@@ -120,18 +132,28 @@ class App(ctk.CTk):
         new_scaling_float = int(new_scaling.replace('%', '')) / 100
         ctk.set_widget_scaling(new_scaling_float)
 
-    def sidebar_button_event(self):
-        print('sidebar_button click')
-
     def on_closing(self):
         self.destroy()
         exit()
 
-
     def create_map(self):
-        print('qqqqq')
-
+        m = create_map(self.selected_file_info[1].replace('.csv', ''), self.selected_year, self.selected_attributes)
+        m.save('index.html')
+        webbrowser.open('index.html')
     
+    def change_map_dataset_event(self, new_map_dataset: str):
+        self.selected_dataset = new_map_dataset
+        for name, file, path in file_info:
+            if file == new_map_dataset + '.csv':
+                self.selected_file_info = [name, dir_path + file, path]
+                break
+
+    def change_year_event(self, new_year: str):
+        self.selected_year = new_year
+
+    def change_attributes_event(self, new_attributes: list):
+        self.selected_attributes = new_attributes
+
     action_queue = [] # list of functions to run on a 1 tick delay. for some reason we cannot run the .focus() command on the 2ed window until after 1 tick
     def duqueue(self):
         while len(self.action_queue) != 0:
