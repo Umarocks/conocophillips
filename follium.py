@@ -7,13 +7,15 @@ import json
 import pandas as pd
 import re
 
-def create_map_2(columns, df, year, primary_key):
+continents = ['Low-income countries', 'High-income countries', 'Lower-middle-income countries', 'Upper-middle-income countries', 'World', 'Africa', 'Asia', 'Europe', 'North America', 'Oceania', 'South America']
+
+def create_map_2(columns, df, year, primary_key, gradient):
     value_dict = {}
 
     min = 999999999999999
     max = -999999999999999
     for index, row in df.iterrows():
-        if 'Country' in row and (row['Country'] in ['Low-income countries', 'High-income countries', 'Lower-middle-income countries', 'Upper-middle-income countries', 'World', 'Africa', 'Asia', 'Europe', 'North America', 'Oceania', 'South America'] or '(FAO)' in row['Country']):
+        if 'Country' in row and (row['Country'] in continents or re.match('^.*\([A-Z]+\).*$', row['Country'])):
             continue
         if (row['year'] if 'year' in row else row['Year']) == year:
             if primary_key not in row:
@@ -81,26 +83,29 @@ def create_map_2(columns, df, year, primary_key):
             folium.GeoJson(
                 feature,
                 style_function=lambda feature: {
-                    'fillColor': 'red',
+                    'fillColor': 'white',
                     'color': 'black',
                     'weight': 2,
-                    'fillOpacity': 0.25,
+                    'fillOpacity': 1,
                 },
                 tooltip=f'No data available for this country in {year}.'
             ).add_to(country_layer)
             continue
         
         value = ((data[primary_key] - min) / (max - min)) if primary_key in data else 0.25
-        value = value ** 0.7
-        value_dict[iso_code] = value
+        value_dict[iso_code] = [
+            value,
+            gradient.to_hex(gradient.get_blended_color(value)),
+            gradient.to_hex(gradient.get_blended_color(1 - value))
+        ]
 
         folium.GeoJson(
             feature,
             style_function=lambda feature: {
-                'fillColor': 'green',
-                'color': 'black',
+                'fillColor': value_dict[feature['id']][1],
+                'color': value_dict[feature['id']][2],
                 'weight': 2,
-                'fillOpacity': value_dict[feature['id']],
+                'fillOpacity': value_dict[feature['id']][0],
             },
             tooltip=tooltip,
             zoom_on_click = True
@@ -156,15 +161,21 @@ def create_map_2(columns, df, year, primary_key):
             popup=data[2]
         ).add_to(m)
 
+    fullscreen_control = Fullscreen()
+    fullscreen_control.add_to(m)
+
     return m
 
 def create_map(filename, year, primary_key):
     schema = parse_schemas.get_schema()
     columns = schema[filename][0]
+    gradient = schema[filename][2]
     df = pd.read_csv(f'Backend/CSV/{filename}.csv')
-    return create_map_2(columns, df, year, primary_key)
+    return create_map_2(columns, df, year, primary_key, gradient)
 
 if __name__ == '__main__':
-    m = create_map('agricultural-land', 2020, 'Agricultural land')
+    #m = create_map('agricultural-land', 2020, 'Agricultural land')
+    m = create_map('fossil-fuels-per-capita', 2019, 'Fossil fuels per capita (kWh)')
+    #m = create_map('fossil-fuel-primary-energy', 2019, 'Fossil fuels (TWh)')
     m.save('index.html')
     webbrowser.open('index.html')
