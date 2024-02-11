@@ -6,6 +6,9 @@ from streamlit_folium import st_folium
 import parse_schemas
 import os
 from follium import create_map
+from graph import plot_gauge
+import random
+
 APP_TITLE = 'Fraud and IdCountry Theft Report'
 APP_SUB_TITLE = 'Source: Federal Trade Commission'
 # st.set_page_config(layout="wide")
@@ -50,7 +53,8 @@ selected_dataset = st.sidebar.selectbox("Select a dataset", simplified_names)
 selected_file_info = next(info for info in file_info if info[0] == selected_dataset)
 # st.sidebar.title(selected_file_info[1])
 full_path = os.path.join(selected_file_info[2], selected_file_info[1])
-
+selected_year=None
+selected_attributes=None
 def UI(attributes,countries,df):# Streamlit UI
     # st.sidebar.title("CSV Data Viewer")
     # Multiselect for selecting attributes
@@ -63,6 +67,14 @@ def UI(attributes,countries,df):# Streamlit UI
     
     return selected_countries,selected_year,selected_attributes
 
+def generate_random_color():
+    # Generate random values for RGB (Red, Green, Blue)
+    red = random.random()
+    green = random.random()
+    blue = random.random()
+
+    # Return the RGB tuple
+    return (red, green, blue)
 # Read the CSV file using Pandas# Read the CSV file using Pandas
 def get_csv():
     df = pd.read_csv(full_path)
@@ -80,15 +92,12 @@ def get_csv():
         st.sidebar.warning("Please select an attribute.")
     else:
         m = create_map(selected_file_info[1].replace('.csv', ''), selected_year, selected_attributes)
-        # st.title("DONE")
         st_folium(m)
         st.dataframe(filtered_df, hide_index=True)
-    # st.title(filtered_df)
 
 
 try:
     get_csv()
-    
 except FileNotFoundError:
     st.sidebar.error(f"File not found: {full_path}")
 except pd.errors.EmptyDataError:
