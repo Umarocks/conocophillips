@@ -165,6 +165,6 @@ def create_map(filename, year, primary_key):
     return create_map_2(columns, df, year, primary_key)
 
 if __name__ == '__main__':
-    m = create_map('agricultural-land', 2020, 'Agricultural land | 00006610 || Area | 005110 || hectares')
+    m = create_map('agricultural-land', 2020, 'Agricultural land')
     m.save('index.html')
     webbrowser.open('index.html')

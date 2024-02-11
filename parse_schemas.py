@@ -40,9 +40,9 @@ def get_schema():
         ],
         'agricultural-land': [
             [
-                'Entity','Code','Year','Agricultural land | 00006610 || Area | 005110 || hectares'
+                'Entity','Code','Year','Agricultural land'
             ],
-            'Agricultural land | 00006610 || Area | 005110 || hectares'
+            'Agricultural land'
         ],
         'change-forest-area-share-total': [
             [
