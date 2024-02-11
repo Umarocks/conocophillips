@@ -66,7 +66,7 @@ folium.Circle(
     popup='Water Amount: 100000'
 ).add_to(m)
 
-
+'''
 # Generate random heatmap data
 heatmap_data = []
 for _ in range(5000):
@@ -78,6 +78,7 @@ for _ in range(5000):
 # Create HeatMap layer and add it to the map
 heatmap = HeatMap(heatmap_data, radius=20, max_zoom=8)
 heatmap.add_to(m)
+'''
 
 with open('datasets/world-countries.json') as handle:
     country_geo = json.loads(handle.read())
@@ -152,7 +153,7 @@ for feature in country_geo['features']:
             'fillColor': 'green',
             'color': 'black',
             'weight': 2,
-            'fillOpacity': 0.5,
+            'fillOpacity': 0.25,
         },
         tooltip=tooltip
     ).add_to(country_layer)
@@ -201,7 +202,51 @@ time.add_to(m)
 layer_control = folium.LayerControl()
 layer_control.add_to(m)
 
+conoconColor = {
+    "Climate Change" : "red",
+    "Water" : "blue",
+    "Biodiversity" : "lightgreen",
+    "Stakeholder Engagement" : "orange"
+}
 
+# Parse IconLocationsPercent.txt
+icon_data = []
+
+with open('IconLocationsPercent.txt', 'r') as file:
+    for line in file:
+        line = line.strip()
+        if line:
+            name, variant, lat, lon = line.split(', ')
+            lat = -(float(lat) * 180 / 80 - 90)
+            lon = float(lon) * 360 / 80 - 180
+            color = conoconColor.get(variant, 'red')
+            icon_data.append([lat, lon, f'<b>{name}</b>', color])
+
+# Create IconMarkers and add them to the map
+for data in icon_data:
+    folium.Marker(
+        location=(data[0], data[1]),
+        icon=folium.Icon(color=data[3]),
+        popup=data[2]
+    ).add_to(m)
+
+with open('IconLocationsPercent.txt', 'r') as file:
+    for line in file:
+        line = line.strip()
+        if line:
+            name, variant, lat, lon = line.split(', ')
+            lat = -(float(lat) * 180 / 100 - 90) + 30
+            lon = float(lon) * 360 / 100 - 180
+            color = conoconColor[variant] if variant in conoconColor else 'red'
+            icon_data.append([lat, lon, f'<b>{name}</b>: {variant}', color])
+
+# Create IconMarkers and add them to the map
+for data in icon_data:
+    folium.Marker(
+        location=(data[0], data[1]),
+        icon=folium.Icon(color=data[3]),
+        popup=data[2]
+    ).add_to(m)
 
 m.save("index.html")
 webbrowser.open("index.html")

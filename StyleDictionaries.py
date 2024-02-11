@@ -17,7 +17,7 @@ def getSustainBorderStyle(sustainGrade):
     return {
         "color" : sustainColor[sustainGrade],
         "fillOpacity" : 0.2,
-        "weight" : 4
+        "weight" : 4,
         "dashArray" : "4, 4"
     }
 
