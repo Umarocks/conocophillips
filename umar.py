@@ -1,5 +1,6 @@
 import streamlit as st
 import pandas as pd
+import numpy as np
 import folium
 from streamlit_folium import st_folium
 import parse_schemas
@@ -7,6 +8,7 @@ import os
 from follium import create_map
 APP_TITLE = 'Fraud and IdCountry Theft Report'
 APP_SUB_TITLE = 'Source: Federal Trade Commission'
+# st.set_page_config(layout="wide")
 
 csv_files = [
     "agricultural-land.csv",
@@ -28,7 +30,6 @@ dir_path = "./Backend/CSV/"
 simplified_names = [
     "Agricultural Land",
     "Change in Forest Area Share Total",
-    "Climate Change",
     "Consumption of Ozone-Depleting Substances",
     "Fossil Fuel Primary Energy",
     "Fossil Fuels Per Capita",
@@ -50,7 +51,6 @@ selected_dataset = st.sidebar.selectbox("Select a dataset", simplified_names)
 selected_file_info = next(info for info in file_info if info[0] == selected_dataset)
 # st.sidebar.title(selected_file_info[1])
 full_path = os.path.join(selected_file_info[2], selected_file_info[1])
-
 
 def UI(attributes,countries,df):# Streamlit UI
     # st.sidebar.title("CSV Data Viewer")
@@ -75,16 +75,15 @@ def get_csv():
     # Filter the dataframe based on user selections
     filtered_df = df[(df['Country'] == selected_countries) & (df['Year'] == selected_year)]
     # selected_attributes.append('Country')        
-    # # filtered_df = filtered_df.rename(columns={'Country': 'Country'})
     # selected_attributes.reverse()
     # Display the filtered dataframe
     if not selected_attributes:
         st.sidebar.warning("Please select an attribute.")
     else:
         m = create_map(selected_file_info[1].replace('.csv', ''), selected_year, selected_attributes)
-        st.title("DONE")
+        # st.title("DONE")
         st_folium(m)
-        # st.sidebar.dataframe(filtered_df[selected_attributes], hide_index=True)
+        st.dataframe(filtered_df, hide_index=True)
     # st.title(filtered_df)
 
 
