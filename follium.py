@@ -7,25 +7,20 @@ import json
 import pandas as pd
 import re
 import countryflag
+import pycountry
 
 continents = ['Low-income countries', 'High-income countries', 'Lower-middle-income countries', 'Upper-middle-income countries', 'World', 'Africa', 'Asia', 'Europe', 'North America', 'Oceania', 'South America']
 
 def create_map_2(columns, df, year, primary_key, gradient):
     value_dict = {}
 
-    min = 999999999999999
-    max = -999999999999999
-    for index, row in df.iterrows():
-        if 'Country' in row and (row['Country'] in continents or re.match('^.*\([A-Z]+\).*$', row['Country'])):
-            continue
-        if (row['year'] if 'year' in row else row['Year']) == year:
-            if primary_key not in row:
-                raise ValueError(f"Primary key '{primary_key}' not found in row {row}")
-            if row[primary_key] < min:
-                min = row[primary_key]
-            if row[primary_key] > max:
-                max = row[primary_key]
-    print(min, max)
+    if 'year' in df.columns:
+        min_value = df.loc[df['year'].fillna(df['Year']) == year, primary_key].min()
+        max_value = df.loc[df['year'].fillna(df['Year']) == year, primary_key].max()
+    else:
+        min_value = df.loc[df['Year'] == year, primary_key].min()
+        max_value = df.loc[df['Year'] == year, primary_key].max()
+    print(min_value, max_value)
 
     tile_layer = folium.TileLayer(
         tiles='https://server.arcgisonline.com/ArcGIS/rest/services/World_Street_Map/MapServer/tile/{z}/{y}/{x}',
@@ -53,20 +48,41 @@ def create_map_2(columns, df, year, primary_key, gradient):
     # Load the CSV file into a DataFrame
     iso_code_dict = {}
     for index, row in df.iterrows():
-        iso_code = row['iso_code'] if 'iso_code' in row else row['Code']
+        iso_code = None
+        if 'iso_code' in row:
+            iso_code = row['iso_code']
+        elif 'Code' in row:
+            iso_code = row['Code']
+        else:
+            try:
+                iso_code = pycountry.countries.get(name=row['Country'])
+                if iso_code is not None:
+                    iso_code = iso_code.alpha_3
+                else:
+                    continue
+            except LookupError:
+                continue
+
         if (row['year'] if 'year' in row else row['Year']) == year and iso_code not in iso_code_dict:
             iso_code_dict[iso_code] = row
 
     for feature in country_geo['features']:
         iso_code = feature['id']
         
+        failure = False
         tooltip = ''
         if iso_code in iso_code_dict:
             data = iso_code_dict[iso_code]
-            for column in columns:
-                if column in data and not pd.isna(data[column]):
-                    tooltip += f'{column}: {data[column]}<br>'
+            if not primary_key in data or pd.isna(data[primary_key]):
+                failure = True
+            else:
+                for column in columns:
+                    if column in data and not pd.isna(data[column]):
+                        tooltip += f'{column}: {data[column]}<br>'
         else:
+            failure = True
+
+        if failure:
             folium.GeoJson(
                 feature,
                 style_function=lambda feature: {
@@ -79,7 +95,7 @@ def create_map_2(columns, df, year, primary_key, gradient):
             ).add_to(country_layer)
             continue
         
-        value = ((data[primary_key] - min) / (max - min)) if primary_key in data else 0.25
+        value = ((data[primary_key] - min_value) / (max_value - min_value)) if primary_key in data else 0.25
         value_dict[iso_code] = [
             value,
             gradient.to_hex(gradient.get_blended_color(value))
@@ -135,7 +151,7 @@ def create_map_2(columns, df, year, primary_key, gradient):
             if line: #new item "country name" added to list, be sure to account for this
                 name, variant, lat, lon, country_name = line.split(', ')
                 lat = -(float(lat) * 180 / 100 - 90) #why is there an outer negative sign?
-                lon = float(lon) * 360 / 100 - 180
+                lon = float(lon) * 360 / 100 - 180 + 20
                 color = conoconColor.get(variant, 'red')
                 desc = f'<h3>{country_name} {countryflag.getflag([country_name])}</h3><h5>{name}</h5>{descriptions.pop()}'
                 popup = folium.Popup(desc, max_width=300, lazy = True)
