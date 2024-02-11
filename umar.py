@@ -8,17 +8,7 @@ import os
 from follium import create_map
 APP_TITLE = 'Fraud and IdCountry Theft Report'
 APP_SUB_TITLE = 'Source: Federal Trade Commission'
-#######################################
-# PAGE SETUP
-#######################################
-
-st.set_page_config(page_title="Sustainability Dashboard", page_icon=":bar_chart:", layout="wide")
-
-st.title("Sustainability Dashboard")
-st.markdown("_Prototype v0.4.1_")
-
-
-
+# st.set_page_config(layout="wide")
 
 csv_files = [
     "agricultural-land.csv",
@@ -47,6 +37,7 @@ simplified_names = [
     "Share of Deaths from Air Pollution",
     "Water and Sanitation"
 ]
+
 # Create a list of tuples with simplified names, file names, and directory path
 file_info = list(zip(simplified_names, csv_files, [dir_path] * len(csv_files)))
 
@@ -60,37 +51,38 @@ selected_file_info = next(info for info in file_info if info[0] == selected_data
 # st.sidebar.title(selected_file_info[1])
 full_path = os.path.join(selected_file_info[2], selected_file_info[1])
 
-
 def UI(attributes,countries,df):# Streamlit UI
     # st.sidebar.title("CSV Data Viewer")
     # Multiselect for selecting attributes
-    selected_attributes = st.sidebar.multiselect("Select Attributes", attributes)
+    selected_attributes = st.sidebar.selectbox("Select Attributes", attributes)
 
     # Dropdown for selecting all countries
     selected_countries = st.sidebar.selectbox("Select Countries", countries)
     # Dropdown for selecting the year
     selected_year = st.sidebar.selectbox("Select Year", sorted(df['Year'].unique(), reverse=True))
+    
     return selected_countries,selected_year,selected_attributes
 
 # Read the CSV file using Pandas# Read the CSV file using Pandas
 def get_csv():
     df = pd.read_csv(full_path)
-    st.write(f"Showing contents of {selected_file_info[0]}")
-    st.dataframe(df)
+    # st.write(f"Showing contents of {selected_file_info[0]}")
+    # st.dataframe(df)
     attributes = [col for col in df.columns if col not in ['Country', 'Year','Code']]
     countries = df['Country'].unique().tolist()
     selected_countries,selected_year,selected_attributes = UI(attributes,countries,df)
     # Filter the dataframe based on user selections
     filtered_df = df[(df['Country'] == selected_countries) & (df['Year'] == selected_year)]
-    selected_attributes.append('Country')        
-    # filtered_df = filtered_df.rename(columns={'Country': 'Country'})
-    selected_attributes.reverse()
+    # selected_attributes.append('Country')        
+    # selected_attributes.reverse()
     # Display the filtered dataframe
     if not selected_attributes:
-        st.sidebar.warning("Please select at least one attribute.")
+        st.sidebar.warning("Please select an attribute.")
     else:
-
-        st.sidebar.dataframe(filtered_df[selected_attributes], hide_index=True)
+        m = create_map(selected_file_info[1].replace('.csv', ''), selected_year, selected_attributes)
+        # st.title("DONE")
+        st_folium(m)
+        st.dataframe(filtered_df, hide_index=True)
     # st.title(filtered_df)
 
 
@@ -100,4 +92,5 @@ try:
 except FileNotFoundError:
     st.sidebar.error(f"File not found: {full_path}")
 except pd.errors.EmptyDataError:
-    st.sidebar.error(f"The selected CSV file is empty: {full_path}") 
+    st.sidebar.error(f"The selected CSV file is empty: {full_path}")    
+
