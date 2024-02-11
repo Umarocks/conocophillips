@@ -133,8 +133,6 @@ def create_map_2(columns, df, year, primary_key):
         descriptions = re.split(';\n[0-9]+:', fulltext)
         descriptions = [x.strip() for x in descriptions]
         descriptions = [x for x in descriptions if x]
-    for i in range(len(descriptions)):
-        print(i, descriptions[i])
 
     # Parse IconLocationsPercent.txt
     icon_data = []
