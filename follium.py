@@ -1,3 +1,4 @@
+import parse_schemas
 import folium
 from folium import *
 import webbrowser
@@ -11,7 +12,7 @@ def create_map_2(columns, df, year, primary_key):
     min = 999999999999999
     max = -999999999999999
     for index, row in df.iterrows():
-        if 'Entity' in row and (row['Entity'] in ['Low-income countries', 'High-income countries', 'Lower-middle-income countries', 'Upper-middle-income countries', 'World', 'Africa', 'Asia', 'Europe', 'North America', 'Oceania', 'South America'] or '(FAO)' in row['Entity']):
+        if 'Country' in row and (row['Country'] in ['Low-income countries', 'High-income countries', 'Lower-middle-income countries', 'Upper-middle-income countries', 'World', 'Africa', 'Asia', 'Europe', 'North America', 'Oceania', 'South America'] or '(FAO)' in row['Country']):
             continue
         if (row['year'] if 'year' in row else row['Year']) == year:
             if primary_key not in row:
@@ -149,13 +150,12 @@ def create_map_2(columns, df, year, primary_key):
     return m
 
 def create_map(filename, year, primary_key):
-    schema = parse_schemas.get_schema()
-    columns = schema[filename][0]
-    df = pd.read_csv(f'Backend/CSV/{filename}.csv')
-    return create_map_2(columns, df, year, primary_key)
+    # schema = parse_schemas.get_schema()
+    # columns = schema[filename][0]
+    df = pd.read_csv(filename)
+    return create_map_2(df, year, primary_key)
 
 if __name__ == '__main__':
-    import parse_schemas
-    m = create_map('agricultural-land', 2020, 'Agricultural land | 00006610 || Area | 005110 || hectares')
+    m = create_map('agricultural-land', 2020, 'Agricultural land ')
     m.save('index.html')
     webbrowser.open('index.html')
