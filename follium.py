@@ -138,7 +138,7 @@ for feature in country_geo['features']:
     if iso_code in iso_code_dict:
         data = iso_code_dict[iso_code]
         for column in columns:
-            if column in data:
+            if column in data and not pd.isna(data[column]):
                 #feature['properties'][column] = data[column]
                 tooltip += f"{column}: {data[column]}<br>"
     folium.GeoJson(
