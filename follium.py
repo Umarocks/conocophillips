@@ -58,6 +58,19 @@ def create_map(columns, df, year):
             for column in columns:
                 if column in data and not pd.isna(data[column]):
                     tooltip += f'{column}: {data[column]}<br>'
+        else:
+            folium.GeoJson(
+                feature,
+                style_function=lambda x: {
+                    'fillColor': 'red',
+                    'color': 'black',
+                    'weight': 2,
+                    'fillOpacity': 0.25,
+                },
+                tooltip=f'No data available for this country in {year}.'
+            ).add_to(country_layer)
+            continue
+
         folium.GeoJson(
             feature,
             style_function=lambda x: {
@@ -66,8 +79,7 @@ def create_map(columns, df, year):
                 'weight': 2,
                 'fillOpacity': 0.25,
             },
-            tooltip=tooltip,
-            parse_html=True
+            tooltip=tooltip
         ).add_to(country_layer)
 
     search_control = Search(
@@ -138,6 +150,6 @@ if __name__ == '__main__':
     schema = parse_schemas.get_schema()
     df = pd.read_csv(f'Backend/CSV/{filename}.csv')
     columns = schema[filename][0]
-    m = create_map(columns, df, 2019)
+    m = create_map(columns, df, 2020)
     m.save('index.html')
     webbrowser.open('index.html')
