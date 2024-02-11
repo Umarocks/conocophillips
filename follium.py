@@ -29,6 +29,7 @@ def create_map_2(df, year, primary_key, gradient):
     value_dict = {}
 
     if primary_key in df.columns:
+        df[primary_key] = df[primary_key].astype(float)  # Convert values to float
         min_value = df[primary_key].min() ** 0.5
         max_value = df[primary_key].max() ** 0.5
     else:
