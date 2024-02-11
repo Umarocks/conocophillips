@@ -56,7 +56,7 @@ try:
     df = pd.read_csv(full_path)
     st.write(f"Showing contents of {selected_file_info[0]}")
     st.dataframe(df)
-    attributes = df.columns.tolist()
+    attributes = [col for col in df.columns if col not in ['Country', 'Year','Code']]
     countries = df['Country'].unique().tolist()
 
     # Streamlit UI
@@ -65,7 +65,7 @@ try:
     selected_attributes = st.multiselect("Select Attributes", attributes)
 
     # Dropdown for selecting all countries
-    selected_countries = st.multiselect("Select Countries", countries, default="China")
+    selected_countries = st.multiselect("Select Countries", countries)
 
     # Dropdown for selecting the year
     selected_year = st.selectbox("Select Year", sorted(df['Year'].unique(), reverse=True))
