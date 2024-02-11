@@ -1,10 +1,10 @@
-
-
 import folium
+from folium import *
 import webbrowser
 from folium.plugins import *
 import json
 import random
+import pandas as pd
 
 night_layer = folium.TileLayer(
     tiles='https://map1.vis.earthdata.nasa.gov/wmts-webmerc/VIIRS_CityLights_2012/default/{time}/{tilematrixset}{maxZoom}/{z}/{y}/{x}.{format}',
@@ -75,11 +75,7 @@ for _ in range(5000):
     heatmap_data.append([lat, lon, intensity])
 
 # Create HeatMap layer and add it to the map
-heatmap = HeatMap(heatmap_data, radius=20)
-heatmap.add_to(m)
-
-# Create HeatMap layer and add it to the map
-heatmap = HeatMap(heatmap_data)
+heatmap = HeatMap(heatmap_data, radius=20, max_zoom=8)
 heatmap.add_to(m)
 
 with open('datasets/world-countries.json') as handle:
@@ -101,6 +97,58 @@ search_control = Search(
     position='topright'
 )
 search_control.add_to(m)
+
+w0 = WmsTileLayer(
+    "http://this.wms.server/ncWMS/wms",
+    name="Test WMS Data",
+    styles="",
+    fmt="image/png",
+    transparent=True,
+    layers="test_data",
+    COLORSCALERANGE="0,10",
+)
+
+w0.add_to(m)
+
+w1 = WmsTileLayer(
+    "http://this.wms.server/ncWMS/wms",
+    name="Test WMS Data",
+    styles="",
+    fmt="image/png",
+    transparent=True,
+    layers="test_data_2",
+    COLORSCALERANGE="0,5",
+
+)
+
+w1.add_to(m)
+
+# Add WmsTileLayers to time control.
+
+time = TimestampedWmsTileLayers([w0, w1])
+
+time.add_to(m)
+
+layer_control = folium.LayerControl()
+layer_control.add_to(m)
+
+# Load the CSV file into a DataFrame
+df = pd.read_csv('Backend/CSV/owid-energy-data.csv')
+numpy_array = df.to_numpy()
+# Specify the year and country you want to filter
+desired_year = 2008
+desired_country = 'USA'
+
+# Filter the DataFrame based on the specified year and country
+filtered_df = df[(df['year'] == desired_year) & (df['iso_code'] == desired_country)]
+
+filtered_df = filtered_df.dropna(subset=['latitude', 'longitude'])  # Drop rows with NaN values in latitude and longitude columns
+
+filtered_df = filtered_df.to_json(orient='records')
+
+# Add the filtered DataFrame to the map
+for i in range(0, len(numpy_array)):
+    folium.Marker([numpy_array[i][2], numpy_array[i][3]], popup=numpy_array[i][0]).add_to(m)
 
 m.save("index.html")
 webbrowser.open("index.html")
