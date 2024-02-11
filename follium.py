@@ -60,26 +60,29 @@ def create_map_2(df, year, primary_key, gradient):
     country_layer = folium.FeatureGroup(name='Countries')
     country_layer.add_to(m)
 
-    # Load the CSV file into a DataFrame
-    iso_code_dict = {}
-    for _, row in df.iterrows():
-        iso_code = None
-        if 'iso_code' in row:
-            iso_code = row['iso_code']
-        elif 'Code' in row:
-            iso_code = row['Code']
-        else:
-            try:
-                iso_code = pycountry.countries.get(name=row['Country'])
-                if iso_code is not None:
-                    iso_code = iso_code.alpha_3
-                else:
+    try:
+        # Load the CSV file into a DataFrame
+        iso_code_dict = {}
+        for _, row in df.iterrows():
+            iso_code = None
+            if 'iso_code' in row:
+                iso_code = row['iso_code']
+            elif 'Code' in row:
+                iso_code = row['Code']
+            else:
+                try:
+                    iso_code = pycountry.countries.get(name=row['Country'])
+                    if iso_code is not None:
+                        iso_code = iso_code.alpha_3
+                    else:
+                        continue
+                except LookupError:
                     continue
-            except LookupError:
-                continue
 
-        if iso_code not in iso_code_dict:
-            iso_code_dict[iso_code] = row
+            if iso_code not in iso_code_dict:
+                iso_code_dict[iso_code] = row
+    except:
+        print('Error loading CSV file')
 
     print('Time taken:', int(time.time() * 1000) - current_time_ms, 'ms')
 
@@ -128,22 +131,28 @@ def create_map_2(df, year, primary_key, gradient):
         ).add_to(country_layer)
 
     for feature in country_geo['features']:
-        thread(feature)
+        try:
+            thread(feature)
+        except:
+            print('Error with', feature['id'])
 
     print('Time taken:', int(time.time() * 1000) - current_time_ms, 'ms')
 
-    search_control = Search(
-        layer=country_layer,
-        geom_type='Polygon',
-        placeholder='Search for a country',
-        collapsed=False,
-        search_label='name',
-        search_zoom=6,
-        position='topright'
-    )
-    search_control.add_to(m)
+    try:
+        search_control = Search(
+            layer=country_layer,
+            geom_type='Polygon',
+            placeholder='Search for a country',
+            collapsed=False,
+            search_label='name',
+            search_zoom=6,
+            position='topright'
+        )
+        search_control.add_to(m)
 
-    gradient.add_to(m)
+        gradient.add_to(m)
+    except:
+        print('Search failed')
 
     conoconColor = {
         'Climate Change' : 'red',
@@ -152,39 +161,48 @@ def create_map_2(df, year, primary_key, gradient):
         'Stakeholder Engagement' : 'orange'
     }
 
-    descriptions = []
-    with open('IconDescriptions.txt', 'r', encoding='utf-8') as file:
-        fulltext = ''.join(file.readlines())
+    try:
+        descriptions = []
+        with open('IconDescriptions.txt', 'r', encoding='utf-8') as file:
+            fulltext = ''.join(file.readlines())
 
-        descriptions = re.split(';\n[0-9]+:', fulltext)
-        descriptions = [x.strip() for x in descriptions]
-        descriptions = [x for x in descriptions if x]
+            descriptions = re.split(';\n[0-9]+:', fulltext)
+            descriptions = [x.strip() for x in descriptions]
+            descriptions = [x for x in descriptions if x]
 
-    print('Time taken:', int(time.time() * 1000) - current_time_ms, 'ms')
+        print('Time taken:', int(time.time() * 1000) - current_time_ms, 'ms')
+    except:
+        print('IconDescriptions.txt is empty')
 
     # Parse IconLocationsPercent.txt
     icon_data = []
 
-    with open('IconLocationsPercent.txt', 'r') as file:
-        for line in file:
-            line = line.strip()
-            if line: #new item "country name" added to list, be sure to account for this
-                name, variant, lat, lon, country_name = line.split(', ')
-                lat = -(float(lat) * 180 / 100 - 90) + 20 #why is there an outer negative sign?
-                lon = float(lon) * 360 / 100 - 180 + 18
-                color = conoconColor.get(variant, 'red')
-                desc = f'<h3>{country_name} {countryflag.getflag([country_name])}</h3><h5>{name}</h5>{descriptions.pop()}'
-                popup = folium.Popup(desc, max_width=300, lazy = True)
-                icon_data.append([lat, lon, popup, color])
+    try:
+        with open('IconLocationsPercent.txt', 'r') as file:
+            for line in file:
+                line = line.strip()
+                if line: #new item "country name" added to list, be sure to account for this
+                    name, variant, lat, lon, country_name = line.split(', ')
+                    lat = -(float(lat) * 180 / 100 - 90) + 20 #why is there an outer negative sign?
+                    lon = float(lon) * 360 / 100 - 180 + 18
+                    color = conoconColor.get(variant, 'red')
+                    desc = f'<h3>{country_name} {countryflag.getflag([country_name])}</h3><h5>{name}</h5>{descriptions.pop()}'
+                    popup = folium.Popup(desc, max_width=300, lazy = True)
+                    icon_data.append([lat, lon, popup, color])
+    except:
+        print('IconLocationsPercent.txt is empty')
 
     # Create IconMarkers and add them to the map
-    for data in icon_data:
-        folium.Marker(
-            location=(data[0], data[1]),
-            icon=folium.Icon(color=data[3]),
-            popup=data[2],
+    try:
+        for data in icon_data:
+            folium.Marker(
+                location=(data[0], data[1]),
+                icon=folium.Icon(color=data[3]),
+                popup=data[2],
 
-        ).add_to(m)
+            ).add_to(m)
+    except:
+        print('IconLocationsPercent.txt is empty')
 
     fullscreen_control = Fullscreen()
     fullscreen_control.add_to(m)
@@ -196,7 +214,10 @@ def create_map(filename, year, primary_key):
     schema = parse_schemas.get_schema()
     gradient = schema[filename][2]
     df = pd.read_csv(f'Backend/CSV/{filename}.csv')
-    m = create_map_2(df, year, primary_key, gradient)
+    try:
+        m = create_map_2(df, year, primary_key, gradient)
+    except:
+        m = folium.Map(location=[-23, -46], zoom_start=3, no_wrap=True,world_copy_jump=True)
     print('Time taken:', int(time.time() * 1000) - current_time_ms, 'ms')
     return m
 
