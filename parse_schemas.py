@@ -35,41 +35,49 @@ def get_schema():
                 'solar_energy_per_capita', 'solar_share_elec', 'solar_share_energy', 'wind_cons_change_pct',
                 'wind_cons_change_twh', 'wind_consumption', 'wind_elec_per_capita', 'wind_electricity',
                 'wind_energy_per_capita', 'wind_share_elec', 'wind_share_energy'
-            ]
+            ],
+            'coal_prod_change_pct'
         ],
         'agricultural-land': [
             [
                 'Entity','Code','Year','Agricultural land | 00006610 || Area | 005110 || hectares'
-            ]
+            ],
+            'Agricultural land | 00006610 || Area | 005110 || hectares'
         ],
         'change-forest-area-share-total': [
             [
                 'Entity','Code','Year','Conversion as share of forest area'
-            ]
+            ],
+            'Conversion as share of forest area'
         ],
         'co-emissions-per-capita': [
             [
                 'Entity','Code','Year','Annual CO₂ emissions (per capita)'
-            ]
+            ],
+            'Annual CO₂ emissions (per capita)'
         ],
         'consumption-of-ozone-depleting-substances': [
             [
                 'Entity','Code','Year','Consumption of controlled substance (zero-filled) - Chemical: All (Ozone-depleting)'
-            ]
+            ],
+            'Consumption of controlled substance (zero-filled) - Chemical: All (Ozone-depleting)'
         ],
         'fossil-fuel-primary-energy': [
             [
                 'Entity','Code','Year','Fossil fuels (TWh)'
-            ]
+            ],
+            'Fossil fuels (TWh)'
         ],
         'fossil-fuel-per-capita': [
             [
                 'Entity','Code','Year','Fossil fuels per capita (kWh)'
-            ]
+            ],
+            'Fossil fuels per capita (kWh)'
         ],
         'global-living-planet-index': [
             [
                 'Entity','Code','Year','Living Planet Index','Upper CI','Lower CI'
-            ]
+            ],
+            'Living Planet Index'
         ]
     }

@@ -5,11 +5,28 @@ from folium.plugins import *
 import json
 import pandas as pd
 
-def create_map(columns, df, year):
+def create_map_2(columns, df, year, primary_key):
+    value_dict = {}
+
+    min = 999999999999999
+    max = -999999999999999
+    for index, row in df.iterrows():
+        if 'Entity' in row and (row['Entity'] in ['Low-income countries', 'High-income countries', 'Lower-middle-income countries', 'Upper-middle-income countries', 'World', 'Africa', 'Asia', 'Europe', 'North America', 'Oceania', 'South America'] or '(FAO)' in row['Entity']):
+            continue
+        if (row['year'] if 'year' in row else row['Year']) == year:
+            if primary_key not in row:
+                raise ValueError(f"Primary key '{primary_key}' not found in row {row}")
+            if row[primary_key] < min:
+                min = row[primary_key]
+            if row[primary_key] > max:
+                max = row[primary_key]
+    print(min, max)
+
     tile_layer = folium.TileLayer(
         tiles='https://server.arcgisonline.com/ArcGIS/rest/services/World_Street_Map/MapServer/tile/{z}/{y}/{x}',
         attr='Tiles &copy; Esri &mdash; Source: Esri, DeLorme, NAVTEQ, USGS, Intermap, iPC, NRCAN, Esri Japan, METI, Esri China (Hong Kong), Esri (Thailand), TomTom, 2012',
         min_zoom=3,
+        name=primary_key
     )
 
     m = folium.Map(location=[-23, -46],
@@ -61,7 +78,7 @@ def create_map(columns, df, year):
         else:
             folium.GeoJson(
                 feature,
-                style_function=lambda x: {
+                style_function=lambda feature: {
                     'fillColor': 'red',
                     'color': 'black',
                     'weight': 2,
@@ -70,16 +87,21 @@ def create_map(columns, df, year):
                 tooltip=f'No data available for this country in {year}.'
             ).add_to(country_layer)
             continue
+        
+        value = ((data[primary_key] - min) / (max - min)) if primary_key in data else 0.25
+        value = value ** 0.7
+        value_dict[iso_code] = value
 
         folium.GeoJson(
             feature,
-            style_function=lambda x: {
+            style_function=lambda feature: {
                 'fillColor': 'green',
                 'color': 'black',
                 'weight': 2,
-                'fillOpacity': 0.25,
+                'fillOpacity': value_dict[feature['id']],
             },
-            tooltip=tooltip
+            tooltip=tooltip,
+            zoom_on_click = True
         ).add_to(country_layer)
 
     search_control = Search(
@@ -109,10 +131,10 @@ def create_map(columns, df, year):
     with open('IconLocationsPercent.txt', 'r') as file:
         for line in file:
             line = line.strip()
-            if line:
+            if line: #new item "country name" added to list, be sure to account for this
                 name, variant, lat, lon = line.split(', ')
-                lat = -(float(lat) * 180 / 80 - 90)
-                lon = float(lon) * 360 / 80 - 180
+                lat = -(float(lat) * 180 / 100 - 90) #why is there an outer negative sign?
+                lon = float(lon) * 360 / 100 - 180
                 color = conoconColor.get(variant, 'red')
                 icon_data.append([lat, lon, f'<b>{name}</b>', color])
 
@@ -124,32 +146,17 @@ def create_map(columns, df, year):
             popup=data[2]
         ).add_to(m)
 
-    with open('IconLocationsPercent.txt', 'r') as file:
-        for line in file:
-            line = line.strip()
-            if line:
-                name, variant, lat, lon = line.split(', ')
-                lat = -(float(lat) * 180 / 100 - 90) + 30
-                lon = float(lon) * 360 / 100 - 180
-                color = conoconColor[variant] if variant in conoconColor else 'red'
-                icon_data.append([lat, lon, f'<b>{name}</b>: {variant}', color])
-
-    # Create IconMarkers and add them to the map
-    for data in icon_data:
-        folium.Marker(
-            location=(data[0], data[1]),
-            icon=folium.Icon(color=data[3]),
-            popup=data[2]
-        ).add_to(m)
-
     return m
+
+def create_map(filename, year):
+    schema = parse_schemas.get_schema()
+    columns = schema[filename][0]
+    df = pd.read_csv(f'Backend/CSV/{filename}.csv')
+    primary_key = schema[filename][1]
+    return create_map_2(columns, df, year, primary_key)
 
 if __name__ == '__main__':
     import parse_schemas
-    filename = 'agricultural-land'
-    schema = parse_schemas.get_schema()
-    df = pd.read_csv(f'Backend/CSV/{filename}.csv')
-    columns = schema[filename][0]
-    m = create_map(columns, df, 2020)
+    m = create_map('agricultural-land', 2020)
     m.save('index.html')
     webbrowser.open('index.html')
