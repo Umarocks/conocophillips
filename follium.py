@@ -4,6 +4,7 @@ import webbrowser
 from folium.plugins import *
 import json
 import pandas as pd
+import re
 
 def create_map_2(columns, df, year, primary_key):
     value_dict = {}
@@ -125,6 +126,16 @@ def create_map_2(columns, df, year, primary_key):
         'Stakeholder Engagement' : 'orange'
     }
 
+    descriptions = []
+    with open('IconDescriptions.txt', 'r', encoding='utf-8') as file:
+        fulltext = ''.join(file.readlines())
+
+        descriptions = re.split(';\n[0-9]+:', fulltext)
+        descriptions = [x.strip() for x in descriptions]
+        descriptions = [x for x in descriptions if x]
+    for i in range(len(descriptions)):
+        print(i, descriptions[i])
+
     # Parse IconLocationsPercent.txt
     icon_data = []
 
@@ -136,7 +147,7 @@ def create_map_2(columns, df, year, primary_key):
                 lat = -(float(lat) * 180 / 100 - 90) #why is there an outer negative sign?
                 lon = float(lon) * 360 / 100 - 180
                 color = conoconColor.get(variant, 'red')
-                icon_data.append([lat, lon, f'<b>{country_name}</b></br><b>{name}</b>', color])
+                icon_data.append([lat, lon, f'<b>{country_name}</b></br><b>{name}</b></br>{descriptions.pop()}', color])
 
     # Create IconMarkers and add them to the map
     for data in icon_data:
