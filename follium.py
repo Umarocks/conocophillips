@@ -141,5 +141,7 @@ def create_map(columns, df):
 
     return m
 
-#m.save("index.html")
-#webbrowser.open("index.html")
+if __name__ == '__main__':
+    m = create_map()
+    m.save("index.html")
+    webbrowser.open("index.html")

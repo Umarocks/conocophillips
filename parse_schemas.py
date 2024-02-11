@@ -1,6 +1,6 @@
-def get_columns():
+def get_schema():
     return {
-        'owid-energy-data': {
+        'owid-energy-data': [
             [
                 'country', 'year', 'iso_code', 'population', 'gdp', 'biofuel_cons_change_pct', 'biofuel_cons_change_twh',
                 'biofuel_cons_per_capita', 'biofuel_consumption', 'biofuel_elec_per_capita', 'biofuel_electricity',
@@ -36,40 +36,40 @@ def get_columns():
                 'wind_cons_change_twh', 'wind_consumption', 'wind_elec_per_capita', 'wind_electricity',
                 'wind_energy_per_capita', 'wind_share_elec', 'wind_share_energy'
             ]
-        },
-        'agricultural-land': {
+        ],
+        'agricultural-land': [
             [
                 'Entity','Code','Year','Agricultural land | 00006610 || Area | 005110 || hectares'
             ]
-        },
-        'change-forest-area-share-total': {
+        ],
+        'change-forest-area-share-total': [
             [
                 'Entity','Code','Year','Conversion as share of forest area'
             ]
-        },
-        'co-emissions-per-capita': {
+        ],
+        'co-emissions-per-capita': [
             [
                 'Entity','Code','Year','Annual CO₂ emissions (per capita)'
             ]
-        },
-        'consumption-of-ozone-depleting-substances': {
+        ],
+        'consumption-of-ozone-depleting-substances': [
             [
                 'Entity','Code','Year','Consumption of controlled substance (zero-filled) - Chemical: All (Ozone-depleting)'
             ]
-        },
-        'fossil-fuel-primary-energy': {
+        ],
+        'fossil-fuel-primary-energy': [
             [
                 'Entity','Code','Year','Fossil fuels (TWh)'
             ]
-        },
-        'fossil-fuel-per-capita': {
+        ],
+        'fossil-fuel-per-capita': [
             [
                 'Entity','Code','Year','Fossil fuels per capita (kWh)'
             ]
-        },
-        'global-living-planet-index': {
+        ],
+        'global-living-planet-index': [
             [
                 'Entity','Code','Year','Living Planet Index','Upper CI','Lower CI'
             ]
-        }
+        ]
     }

@@ -1,15 +1,13 @@
 import streamlit as st
 from streamlit_folium import st_folium
-import folium
-from folium import *
-from folium.plugins import *
+import follium
 import pandas as pd
-parse_schemas = __import__('Backend/parse_schemas.py')
+import parse_schemas
 
 filename = 'owid-energy-data'
-columns = parse_schemas.get_columns(filename)
+schema = parse_schemas.get_schema()
+columns = schema[filename][0]
 
-import follium
 df = pd.read_csv(f'Backend/CSV/{filename}.csv')
 m = follium.create_map(columns, df)
 
