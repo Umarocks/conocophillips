@@ -8,3 +8,4 @@ pip install netCDF4
 pip install pandas
 pip install numpy
 pip install matplotlib
+pip install pycountry
