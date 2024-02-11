@@ -1,4 +1,4 @@
-Entity,Date,Seasonal variation,Combined measurements,Monthly averaged,Annual averaged,sea_temperature_anomaly,Sea surface temp (lower-bound),Sea surface temp (upper-bound),Monthly pH measurement,Annual average,Temperature anomaly,Church & White,University of Hawaii,Average,arctic_sea_ice_osisaf,Monthly averaged,Annual averaged,Monthly averaged,Annual averaged,Snow cover,Annual average,sea_ice_extent,ocean_heat_content_2000m,ocean_heat_content_700m
+Country,Date,Seasonal variation,Combined measurements,Monthly averaged,Annual averaged,sea_temperature_anomaly,Sea surface temp (lower-bound),Sea surface temp (upper-bound),Monthly pH measurement,Annual average,Temperature anomaly,Church & White,University of Hawaii,Average,arctic_sea_ice_osisaf,Monthly averaged,Annual averaged,Monthly averaged,Annual averaged,Snow cover,Annual average,sea_ice_extent,ocean_heat_content_2000m,ocean_heat_content_700m
 Antarctica,1992-01-01,,418.31036,,,,,,,,,,,,,,,,,,,,,
 Antarctica,1992-01-31,,425.377,,,,,,,,,,,,,,,,,,,,,
 Antarctica,1992-03-01,,433.552,,,,,,,,,,,,,,,,,,,,,
