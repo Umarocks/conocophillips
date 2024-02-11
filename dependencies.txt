@@ -11,3 +11,4 @@ pip install matplotlib
 pip install pycountry
 pip install streamlit
 pip install streamlit-folium
+pip install countryflag

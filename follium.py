@@ -6,6 +6,7 @@ from folium.plugins import *
 import json
 import pandas as pd
 import re
+import countryflag
 
 continents = ['Low-income countries', 'High-income countries', 'Lower-middle-income countries', 'Upper-middle-income countries', 'World', 'Africa', 'Asia', 'Europe', 'North America', 'Oceania', 'South America']
 
@@ -42,20 +43,6 @@ def create_map_2(columns, df, year, primary_key, gradient):
 
     mouse_position = MousePosition()
     mouse_position.add_to(m)
-
-    '''
-    # Generate random heatmap data
-    heatmap_data = []
-    for _ in range(5000):
-        lat = random.uniform(-90, 90)
-        lon = random.uniform(-180, 180)
-        intensity = random.uniform(0, 1)
-        heatmap_data.append([lat, lon, intensity])
-
-    # Create HeatMap layer and add it to the map
-    heatmap = HeatMap(heatmap_data, radius=20, max_zoom=8)
-    heatmap.add_to(m)
-    '''
 
     with open('datasets/world-countries.json') as handle:
         country_geo = json.loads(handle.read())
@@ -150,14 +137,17 @@ def create_map_2(columns, df, year, primary_key, gradient):
                 lat = -(float(lat) * 180 / 100 - 90) #why is there an outer negative sign?
                 lon = float(lon) * 360 / 100 - 180
                 color = conoconColor.get(variant, 'red')
-                icon_data.append([lat, lon, f'<b>{country_name}</b></br><b>{name}</b></br>{descriptions.pop()}', color])
+                desc = f'<h3>{country_name} {countryflag.getflag([country_name])}</h3><h5>{name}</h5>{descriptions.pop()}'
+                popup = folium.Popup(desc, max_width=300, lazy = True)
+                icon_data.append([lat, lon, popup, color])
 
     # Create IconMarkers and add them to the map
     for data in icon_data:
         folium.Marker(
             location=(data[0], data[1]),
             icon=folium.Icon(color=data[3]),
-            popup=data[2]
+            popup=data[2],
+
         ).add_to(m)
 
     fullscreen_control = Fullscreen()
