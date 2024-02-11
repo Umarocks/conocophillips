@@ -39,55 +39,55 @@ def get_schema():
                 'wind_energy_per_capita', 'wind_share_elec', 'wind_share_energy'
             ],
             'coal_prod_change_pct',
-            cm.linear.magma
+            cm.linear.viridis
         ],
         'agricultural-land': [
             [
                 'Entity','Code','Year','Agricultural land'
             ],
             'Agricultural land',
-            cm.linear.Spectral_07
+            cm.linear.viridis
         ],
         'change-forest-area-share-total': [
             [
                 'Entity','Code','Year','Conversion as share of forest area'
             ],
             'Conversion as share of forest area',
-            cm.linear.BuGn_06
+            cm.linear.viridis
         ],
         'co-emissions-per-capita': [
             [
                 'Entity','Code','Year','Annual CO₂ emissions (per capita)'
             ],
             'Annual CO₂ emissions (per capita)',
-            cm.linear.YlOrBr_05
+            cm.linear.viridis
         ],
         'consumption-of-ozone-depleting-substances': [
             [
                 'Entity','Code','Year','Consumption of controlled substance (zero-filled) - Chemical: All (Ozone-depleting)'
             ],
             'Consumption of controlled substance (zero-filled) - Chemical: All (Ozone-depleting)',
-            cm.linear.PuOr_06
+            cm.linear.viridis
         ],
         'fossil-fuel-primary-energy': [
             [
                 'Entity','Code','Year','Fossil fuels (TWh)'
             ],
             'Fossil fuels (TWh)',
-            cm.linear.RdPu_08
+            cm.linear.viridis
         ],
         'fossil-fuels-per-capita': [
             [
                 'Entity','Code','Year','Fossil fuels per capita (kWh)'
             ],
             'Fossil fuels per capita (kWh)',
-            cm.linear.RdPu_07
+            cm.linear.viridis
         ],
         'global-living-planet-index': [
             [
                 'Entity','Code','Year','Living Planet Index','Upper CI','Lower CI'
             ],
             'Living Planet Index',
-            cm.linear.YlOrBr_07
+            cm.linear.viridis
         ]
     }
